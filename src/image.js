@@ -36,15 +36,12 @@ class AsyncQueue {
 }
 
 // 非同期タスクの例
-const asyncTask = (image)=> {
-  return () =>
-    new Promise((resolve) => {
-      changeImage(image).then(() => {
-        console.log(`タスクが完了しました`);
-        resolve();
-      });
-    });
-}
+const asyncTask = (image) => {
+  return async () => {
+    await changeImage(image);
+    console.log(`タスクが完了しました`);
+  };
+};
 
 const main = () => {
   const evtSource = new EventSource("http://127.0.0.1:3000/sse");
@@ -77,4 +74,4 @@ const main = () => {
   console.log("add event");
 };
 
-main()
+main();
