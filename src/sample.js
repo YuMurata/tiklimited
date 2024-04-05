@@ -11,7 +11,7 @@ function openServer() {
     } else {
       res.writeHead(200, { "Content-Type": contentType });
       res.write(data);
-      console.log(url);
+      console.log(`write: ${url}`);
       return res.end();
     }
   }
@@ -40,53 +40,58 @@ function openServer() {
   }, 1000);
 
   server.on("request", function (req, res) {
-    fs.readFile(__dirname + "/index.html", "utf-8", function (err, data) {
-      if (err) {
-        return retNotFound(res);
-      } else {
-        var url = req.url;
-        console.log("url: " + url);
-        if (url === "/") {
-          res.writeHead(200, { "Content-Type": "text/html" });
-          res.write(data);
-          console.log("root");
-          return res.end();
-        } else if (url === "/sse") {
-          res.writeHead(200, {
-            "Content-Type": "text/event-stream",
-            "Cache-Control": "no-cache",
-            Connection: "keep-alive",
-            "X-Accel-Buffering": "no", // disable nginx proxy buffering
-          });
+    var url = req.url;
+    console.log("url: " + url);
 
-          function myevent(d) {
-            res.write(`data: ${d}\n\n`);
-          }
-          notifyEmitter.on("myevent", myevent);
-          req.on("close", function () {
-            notifyEmitter.removeListener("myevent", myevent);
-          });
+    if (url === "/") {
+      fs.readFile(__dirname + "/index.html", "utf-8", function (err, data) {
+        readContent(err, data, url, res, "text/html");
+      });
+    } else if (url === "/sse") {
+      res.writeHead(200, {
+        "Content-Type": "text/event-stream",
+        "Cache-Control": "no-cache",
+        Connection: "keep-alive",
+        "X-Accel-Buffering": "no", // disable nginx proxy buffering
+      });
 
-          console.log("add event");
-
-          // return res.end();
-        } else if (url.includes(".js")) {
-          fs.readFile(__dirname + url, "utf-8", function (err, data) {
-            readContent(err, data, url, res, "text/javascript");
-          });
-        } else if (url.includes(".mp3")) {
-          fs.readFile(__dirname + url, function (err, data) {
-            readContent(err, data, url, res, "audio/mp3");
-          });
-        } else if (url.includes(".wav")) {
-          fs.readFile(__dirname + url, function (err, data) {
-            readContent(err, data, url, res, "audio/wav");
-          });
-        } else {
-          console.log("not match");
-        }
+      function myevent(d) {
+        res.write(`data: ${d}\n\n`);
       }
-    });
+      notifyEmitter.on("myevent", myevent);
+      req.on("close", function () {
+        notifyEmitter.removeListener("myevent", myevent);
+      });
+
+      console.log("add event");
+
+      // return res.end();
+    } else if (url.includes(".js")) {
+      fs.readFile(__dirname + url, "utf-8", function (err, data) {
+        readContent(err, data, url, res, "text/javascript");
+      });
+    } else if (url.includes(".mp3")) {
+      fs.readFile(__dirname + url, function (err, data) {
+        readContent(err, data, url, res, "audio/mp3");
+      });
+    } else if (url.includes(".wav")) {
+      fs.readFile(__dirname + url, function (err, data) {
+        readContent(err, data, url, res, "audio/wav");
+      });
+    } else if (url.includes(".png")) {
+      res.writeHead(200, { "Content-Type": "image/png; charset=utf-8" });
+      fs.readFile(__dirname + url, "binary", function (err, data) {
+        if (err) {
+          console.log(url);
+          return retNotFound(res);
+        } else {
+          res.write(data, "binary");
+          return res.end();
+        }
+      });
+    } else {
+      console.log("not match");
+    }
   });
 
   server.listen(port, ipadress);

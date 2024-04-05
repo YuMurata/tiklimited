@@ -36,29 +36,53 @@ class AsyncQueue {
 }
 
 // 非同期タスクの例
-const asyncTask = (image) => {
+const asyncTask = (image, container) => {
   return async () => {
+    container.appendChild(image);
     await changeImage(image);
+    container.removeChild(image)
     console.log(`タスクが完了しました`);
   };
+};
+
+const loadImage = async (src) => {
+  const image = new Image();
+  image.src = src;
+  await image.decode();
+  image.style.opacity = 0;
+  return image;
 };
 
 const main = () => {
   const evtSource = new EventSource("http://127.0.0.1:3000/sse");
   const container = document.getElementById("superChatContainer");
-  container.innerHTML =
-    '<img src="https://www.sejuku.net/blog/wp-content/uploads/2017/10/voice_logo.png" alt="画像の解説文" id="targetImage">'; // ここで画像の表示などの処理を行う
-
+  const imageElement = container.appendChild(new Image());
+  // container.innerHTML =
+  //   '<img src="https://www.sejuku.net/blog/wp-content/uploads/2017/10/voice_logo.png" alt="画像の解説文" id="targetImage">'; // ここで画像の表示などの処理を行う
+  // container.innerHTML =
+  //   '<img src="img/image.png" alt="画像の解説文" id="targetImage">'; // ここで画像の表示などの処理を行う
   const asyncQueue = new AsyncQueue();
 
-  var image = document.getElementById("targetImage");
-  image.style.opacity = 0;
+  // const image = new Image();
+  // image.src = "img/image.png";
+  // image.decode().then(() => {
+  //   container.appendChild(image);
+  // });
+  // console.log("63");
+
+  // var image = document.getElementById("targetImage");
+  // loadImage("image.png").then(() => {
+  //   console.log("load image");
+  // });
+  // image.style.opacity = 0;
 
   evtSource.addEventListener(
     "message",
     (event) => {
       console.log("triggered");
-      asyncQueue.enqueue(asyncTask(image));
+      loadImage("img/image.png").then((image) => {
+        asyncQueue.enqueue(asyncTask(image, container));
+      });
     },
     false
   );
