@@ -1,11 +1,14 @@
-function openServer() {
-  function retNotFound(res) {
+const events = require("events");
+const notifyEmitter = new events.EventEmitter();
+
+const openServer = () => {
+  const retNotFound = (res) => {
     res.writeHead(404, { "Content-Type": "text/plain" });
     res.write("not found!");
     return res.end();
-  }
+  };
 
-  function readContent(err, data, url, res, contentType) {
+  const readContent = (err, data, url, res, contentType) => {
     if (err) {
       return retNotFound(res);
     } else {
@@ -14,33 +17,28 @@ function openServer() {
       console.log(`write: ${url}`);
       return res.end();
     }
-  }
+  };
 
-  var http = require("http"),
+  const http = require("http"),
     port = 3000, //ポート番号
     ipadress = "localhost", //IPアドレス
     fs = require("fs");
 
-  var server = http.createServer();
+  const server = http.createServer();
 
-  var queue = [];
-  queue.push("test");
-
-  var events = require("events");
   const util = require("node:util");
-  var notifyEmitter = new events.EventEmitter();
 
-  setInterval(function () {
-    var len = notifyEmitter.listeners("myevent").length;
-    util.log(JSON.stringify(["listeners.length", len]));
-    if (len > 0) {
-      notifyEmitter.emit("myevent", "interval!");
-      util.log(JSON.stringify(["emit myevent"]));
-    }
-  }, 1000);
+  // setInterval(function () {
+  //   const len = notifyEmitter.listeners("myevent").length;
+  //   util.log(JSON.stringify(["listeners.length", len]));
+  //   if (len > 0) {
+  //     notifyEmitter.emit("myevent", "interval!");
+  //     util.log(JSON.stringify(["emit myevent"]));
+  //   }
+  // }, 1000);
 
   server.on("request", function (req, res) {
-    var url = req.url;
+    const url = req.url;
     console.log("url: " + url);
 
     if (url === "/") {
@@ -59,6 +57,11 @@ function openServer() {
         res.write(`data: ${d}\n\n`);
       }
       notifyEmitter.on("myevent", myevent);
+      notifyEmitter.on("chat", (data) => {
+        res.write(`event: chat\n`);
+        res.write(`data: ${data}\n\n`);
+        console.log("send chat event");
+      });
       req.on("close", function () {
         notifyEmitter.removeListener("myevent", myevent);
       });
@@ -96,14 +99,14 @@ function openServer() {
 
   server.listen(port, ipadress);
   console.log("server listening ...");
-}
+};
 
-function connectTiktok() {
+const connectTiktok = () => {
   const { mainModule } = require("process");
   const { WebcastPushConnection } = require("tiktok-live-connector");
 
   // Username of someone who is currently live
-  let tiktokUsername = "20103040n";
+  let tiktokUsername = "karenfrez";
 
   // Create a new wrapper object and pass the username
   let tiktokLiveConnection = new WebcastPushConnection(tiktokUsername);
@@ -121,9 +124,9 @@ function connectTiktok() {
   // Define the events that you want to handle
   // In this case we listen to chat messages (comments)
   tiktokLiveConnection.on("chat", (data) => {
-    console.log(
-      `${data.uniqueId} (userId:${data.userId}) writes: ${data.comment}`
-    );
+    // console.log(
+    //   `${data.uniqueId} (userId:${data.userId}) writes: ${data.comment}`
+    // );
   });
 
   // And here we receive gifts sent to the streamer
@@ -131,8 +134,12 @@ function connectTiktok() {
     console.log(
       `${data.uniqueId} (userId:${data.userId}) sends ${data.giftId}`
     );
+    notifyEmitter.emit(
+      "chat",
+      JSON.stringify({ user: data.uniqueId, data: "img/image.png" })
+    );
   });
-}
+};
 
 function main() {
   connectTiktok();

@@ -40,7 +40,7 @@ const asyncTask = (image, container) => {
   return async () => {
     container.appendChild(image);
     await changeImage(image);
-    container.removeChild(image)
+    container.removeChild(image);
     console.log(`タスクが完了しました`);
   };
 };
@@ -56,7 +56,6 @@ const loadImage = async (src) => {
 const main = () => {
   const evtSource = new EventSource("http://127.0.0.1:3000/sse");
   const container = document.getElementById("superChatContainer");
-  const imageElement = container.appendChild(new Image());
   // container.innerHTML =
   //   '<img src="https://www.sejuku.net/blog/wp-content/uploads/2017/10/voice_logo.png" alt="画像の解説文" id="targetImage">'; // ここで画像の表示などの処理を行う
   // container.innerHTML =
@@ -77,12 +76,16 @@ const main = () => {
   // image.style.opacity = 0;
 
   evtSource.addEventListener(
-    "message",
+    "chat",
     (event) => {
+      const data = JSON.parse(event.data);
+
       console.log("triggered");
-      loadImage("img/image.png").then((image) => {
+      loadImage(data.data).then((image) => {
+        console.log(`${data.user} send gift`);
         asyncQueue.enqueue(asyncTask(image, container));
       });
+      // container.innerHTML += data.user;
     },
     false
   );
