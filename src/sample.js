@@ -57,13 +57,17 @@ const openServer = () => {
         res.write(`data: ${d}\n\n`);
       }
       notifyEmitter.on("myevent", myevent);
-      notifyEmitter.on("chat", (data) => {
+
+      const chatEvent = (data) => {
         res.write(`event: chat\n`);
         res.write(`data: ${data}\n\n`);
         console.log("send chat event");
-      });
+      };
+
+      notifyEmitter.on("chat", chatEvent);
       req.on("close", function () {
         notifyEmitter.removeListener("myevent", myevent);
+        notifyEmitter.removeListener("chat", chatEvent);
       });
 
       console.log("add event");
@@ -101,15 +105,15 @@ const openServer = () => {
   console.log("server listening ...");
 };
 
-const connectTiktok = () => {
+const connectTiktok = (dbEvents) => {
   const { mainModule } = require("process");
   const { WebcastPushConnection } = require("tiktok-live-connector");
 
   // Username of someone who is currently live
-  let tiktokUsername = "karenfrez";
+  const tiktokUsername = "takibci.yayin.95";
 
   // Create a new wrapper object and pass the username
-  let tiktokLiveConnection = new WebcastPushConnection(tiktokUsername);
+  const tiktokLiveConnection = new WebcastPushConnection(tiktokUsername);
 
   // Connect to the chat (await can be used as well)
   tiktokLiveConnection
@@ -131,21 +135,120 @@ const connectTiktok = () => {
 
   // And here we receive gifts sent to the streamer
   tiktokLiveConnection.on("gift", (data) => {
-    console.log(
-      `${data.uniqueId} (userId:${data.userId}) sends ${data.giftId}`
-    );
-    notifyEmitter.emit(
-      "chat",
-      JSON.stringify({ user: data.uniqueId, data: "img/image.png" })
-    );
+    // console.log(
+    //   `${data.uniqueId} (userId:${data.userId}) sends ${data.giftId}`
+    // );
+    console.log(`gift: ${JSON.stringify(dbEvents.gift)}`);
+    dbEvents.gift.forEach((x) => {
+      notifyEmitter.emit(
+        "chat",
+        JSON.stringify({ user: data.uniqueId, data: dbEvents.gift })
+      );
+    });
   });
 };
 
-function main() {
-  connectTiktok();
+const initDB = () => {
+  const sqlite3 = require("sqlite3");
+  const fs = require("fs");
+  const path = require("path");
+  const rootPath = path.resolve(__dirname, "../");
+  fs.mkdirSync(`${rootPath}/db`, { recursive: true }, (err) => {
+    if (err) throw err;
+  });
+
+  const db = new sqlite3.Database(`${rootPath}/db/test.db`);
+
+  return new Promise((resolve, rej) => {
+    db.serialize(() => {
+      db.run(
+        "create table if not exists actions(name text primary key, action text, path text)"
+      );
+      db.run("create table if not exists events(trigger text,action text)");
+
+      db.run(
+        "insert into actions(name, action, path) values(?, ?, ?)",
+        "show image",
+        "image",
+        "img/image.png"
+      );
+      db.run(
+        "insert into events(trigger, action) values(?,?)",
+        "gift",
+        "show image"
+      );
+
+      db.all("select * from events", (err1, rows) => {
+        console.log(`inited DB: ${rows}`);
+        resolve();
+      });
+    });
+    db.close();
+    console.log("init db closed");
+  });
+};
+
+const readDB = async () => {
+  const sqlite3 = require("sqlite3");
+  const fs = require("fs");
+  const path = require("path");
+  const rootPath = path.resolve(__dirname, "../");
+  fs.mkdirSync(`${rootPath}/db`, { recursive: true }, (err) => {
+    if (err) throw err;
+  });
+
+  const db = new sqlite3.Database(`${rootPath}/db/test.db`);
+  console.log("read db opend");
+
+  const getDBEvents = async () => {
+    return new Promise((resolve, rej) => {
+      db.all("select * from events", (err1, rows) => {
+        console.log(`getDB: ${rows}`);
+        resolve(rows);
+      });
+    });
+  };
+
+  const makeTiktokEvents = (dbEvents) => {
+    const tiktokEvents = { gift: [] };
+    return new Promise((resolve, rej) => {
+      console.log(`dbevents: ${dbEvents}`);
+      db.all(`select * from actions`, (err2, actionsRows) => {
+        dbEvents.forEach((eventsRow) => {
+          const filteredRows = actionsRows.filter((actionsRow) => {
+            console.log(`actionsRow: ${actionsRow.name}`);
+            console.log(`eventsRow: ${eventsRow.action}`);
+
+            return eventsRow.action === actionsRow.name;
+          });
+
+          console.log(`filterd_rows: ${filteredRows}`);
+
+          filteredRows.forEach((actionsRow) => {
+            tiktokEvents[eventsRow.trigger].push({action: actionsRow.action, path: actionsRow.path});
+          });
+        });
+        resolve(tiktokEvents);
+      });
+    });
+  };
+
+  const dbEvents = await getDBEvents();
+  const tiktokEvents = await makeTiktokEvents(dbEvents);
+  console.log(`ret events: ${JSON.stringify(tiktokEvents)}`);
+
+  db.close();
+  console.log("read db closed");
+  return tiktokEvents;
+};
+
+const main = async () => {
+  await initDB();
+  const tiktokEvents = await readDB();
+  connectTiktok(tiktokEvents);
   openServer();
 
   // ...and more events described in the documentation below
-}
+};
 
 main();

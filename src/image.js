@@ -80,10 +80,16 @@ const main = () => {
     (event) => {
       const data = JSON.parse(event.data);
 
-      console.log("triggered");
-      loadImage(data.data).then((image) => {
-        console.log(`${data.user} send gift`);
-        asyncQueue.enqueue(asyncTask(image, container));
+      console.log(`triggered: ${JSON.stringify(data)}`);
+      const filterdDatas = data.data.filter((x) => {
+        return x.action === "image";
+      });
+      console.log(`filtered: ${JSON.stringify(filterdDatas)}`);
+      filterdDatas.forEach((filterdData) => {
+        loadImage(filterdData.path).then((image) => {
+          console.log(`${data.user} send gift`);
+          asyncQueue.enqueue(asyncTask(image, container));
+        });
       });
       // container.innerHTML += data.user;
     },
