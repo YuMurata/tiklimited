@@ -96,6 +96,10 @@ const openServer = () => {
           return res.end();
         }
       });
+    } else if (url.includes(".webm")) {
+      fs.readFile(__dirname + url, function (err, data) {
+        readContent(err, data, url, res, "video/webm");
+      });
     } else {
       console.log("not match");
     }
@@ -110,7 +114,7 @@ const connectTiktok = (dbEvents) => {
   const { WebcastPushConnection } = require("tiktok-live-connector");
 
   // Username of someone who is currently live
-  const tiktokUsername = "takibci.yayin.95";
+  const tiktokUsername = "dimassadisaputraa";
 
   // Create a new wrapper object and pass the username
   const tiktokLiveConnection = new WebcastPushConnection(tiktokUsername);
@@ -173,9 +177,15 @@ const initDB = () => {
         "img/image.png"
       );
       db.run(
+        "insert into actions(name, action, path) values(?, ?, ?)",
+        "play video",
+        "video",
+        "video/sample6.webm"
+      );
+      db.run(
         "insert into events(trigger, action) values(?,?)",
         "gift",
-        "show image"
+        "play video"
       );
 
       db.all("select * from events", (err1, rows) => {
@@ -225,7 +235,10 @@ const readDB = async () => {
           console.log(`filterd_rows: ${filteredRows}`);
 
           filteredRows.forEach((actionsRow) => {
-            tiktokEvents[eventsRow.trigger].push({action: actionsRow.action, path: actionsRow.path});
+            tiktokEvents[eventsRow.trigger].push({
+              action: actionsRow.action,
+              path: actionsRow.path,
+            });
           });
         });
         resolve(tiktokEvents);
@@ -243,7 +256,7 @@ const readDB = async () => {
 };
 
 const main = async () => {
-  await initDB();
+  // await initDB();
   const tiktokEvents = await readDB();
   connectTiktok(tiktokEvents);
   openServer();
