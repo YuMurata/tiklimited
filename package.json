@@ -1,6 +1,6 @@
 {
   "dependencies": {
     "sqlite3": "^5.1.7",
-    "tiktok-live-connector": "^1.1.5"
+    "tiktok-live-connector": "^1.1.7"
   }
 }
