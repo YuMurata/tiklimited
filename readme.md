@@ -13,4 +13,5 @@
 node src/sample.js
 ```
 
-
+# 参考
+https://ralacode.com/blog/post/create-nodejs-react-app-with-typescript/

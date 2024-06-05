@@ -45,6 +45,10 @@ const openServer = () => {
       fs.readFile(__dirname + "/index.html", "utf-8", function (err, data) {
         readContent(err, data, url, res, "text/html");
       });
+    } else if (url === "/screen") {
+      fs.readFile(__dirname + "/screen.html", "utf-8", function (err, data) {
+        readContent(err, data, url, res, "text/html");
+      });
     } else if (url === "/sse") {
       res.writeHead(200, {
         "Content-Type": "text/event-stream",
