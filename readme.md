@@ -14,4 +14,7 @@ node src/sample.js
 ```
 
 # 参考
-https://ralacode.com/blog/post/create-nodejs-react-app-with-typescript/
+backend/frontend作成 https://ralacode.com/blog/post/create-nodejs-react-app-with-typescript/
+mui導入 https://zenn.dev/masaru0208/articles/153a69c8b21206
+表作る https://qiita.com/takiguchi-yu/items/4d6e2845402aa2d5f36a
+表作る https://zenn.dev/longbridge/articles/1ea4c93702fdfc
