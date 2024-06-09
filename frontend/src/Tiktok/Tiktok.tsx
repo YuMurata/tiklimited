@@ -4,16 +4,18 @@ import ActionDBTable from "../DBTable/Actions/ActionDBTable";
 import CreateDB from "../DBTable/Events/CreateDB";
 
 import { useForm, SubmitHandler, Controller } from "react-hook-form";
-import { Box, Button, TextField } from "@mui/material";
+import { Box, Button, CircularProgress, TextField } from "@mui/material";
 import { useTiktokForm } from "./useTiktokForm";
-import { Block } from "@mui/icons-material";
+import Stack from "@mui/material/Stack";
+import OnlinePredictionIcon from "@mui/icons-material/OnlinePrediction";
 
 export const Tiktok: React.FC = () => {
-  const { control, onConnect, onDisConnect } = useTiktokForm();
+  const { control, onConnect, onDisConnect, isConnected, isConnecting } =
+    useTiktokForm();
 
   return (
     <div>
-      <Box>
+      <Stack direction="row">
         <Controller
           name="tiktokID"
           control={control}
@@ -32,7 +34,11 @@ export const Tiktok: React.FC = () => {
             />
           )}
         />
-      </Box>
+        {isConnecting && <CircularProgress />}
+        {isConnected && (
+          <OnlinePredictionIcon color="success" fontSize="large" />
+        )}        
+      </Stack>
       <div>
         <Box textAlign={"right"}>
           <Button onClick={onConnect} variant="contained" fullWidth={true}>
@@ -40,7 +46,12 @@ export const Tiktok: React.FC = () => {
           </Button>
         </Box>
         <Box textAlign={"right"}>
-          <Button onClick={onDisConnect} variant="contained" fullWidth={true} color="secondary">
+          <Button
+            onClick={onDisConnect}
+            variant="contained"
+            fullWidth={true}
+            color="secondary"
+          >
             disconnect
           </Button>
         </Box>

@@ -1,7 +1,7 @@
 import { Router, Request, Response } from "express";
 import EventEmitter from "events";
 
-const notifyEmitter = new EventEmitter();
+export const notifyEmitter = new EventEmitter();
 
 export const getSSE = () => {
   const router = Router();
@@ -29,6 +29,7 @@ export const getSSE = () => {
     req.on("close", function () {
       notifyEmitter.removeListener("myevent", myevent);
       notifyEmitter.removeListener("chat", chatEvent);
+      return res.end()
     });
 
     console.log("add event");
