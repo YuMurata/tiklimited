@@ -1,15 +1,16 @@
 import { Router, Request, Response } from "express";
 import { WebcastPushConnection } from "tiktok-live-connector";
 import bodyParser from "body-parser";
+import { disconnect } from "process";
 
-export const getConnect = () => {
+export const getTiktok = () => {
   const router = Router();
   router.use(bodyParser.urlencoded({ extended: true }));
   router.use(bodyParser.json());
 
   var tiktokLiveSession: WebcastPushConnection | null = null;
 
-  router.post("/", (req: Request, res: Response) => {
+  router.post("/connect", (req: Request, res: Response) => {
     console.log(req.body);
     const tiktokID = req.body.tiktokID;
 
@@ -53,6 +54,14 @@ export const getConnect = () => {
     });
     
     tiktokLiveSession = tiktokLiveConnection;
+  });
+
+  router.post("/disconnect", (req: Request, res: Response) => {
+    console.log("disconnect");
+
+    tiktokLiveSession?.disconnect();
+    tiktokLiveSession = null
+    return res.status(200).send("ok")
   });
 
   return router;

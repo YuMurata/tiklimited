@@ -1,7 +1,7 @@
 import express from "express";
 import { getEventDB } from "./src/db/events";
 import { getSSE } from "./src/sse";
-import { getConnect } from "./src/connect";
+import { getTiktok } from "./src/tiktok";
 
 import { WebcastPushConnection } from "tiktok-live-connector";
 import bodyParser from "body-parser";
@@ -12,7 +12,7 @@ const port = 8000;
 app.use(express.static("public"));
 app.use("/db/events", getEventDB());
 app.use("/sse", getSSE());
-app.use("/connect", getConnect());
+app.use("/tiktok", getTiktok());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json())
 
