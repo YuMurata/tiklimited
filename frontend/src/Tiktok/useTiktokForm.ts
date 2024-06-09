@@ -39,6 +39,7 @@ export const useTiktokForm = () => {
       setConnected(true);
       setConnecting(false);
     };
+    setConnected(false);
     setConnecting(true);
     post();
     console.log(`isConnected: ${isConnected}`);

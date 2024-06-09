@@ -31,7 +31,7 @@ export const getSSE = () => {
       notifyEmitter.removeListener("chat", chatEvent);
       return res.end()
     });
-
+    
     console.log("add event");
   });
 

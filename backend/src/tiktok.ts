@@ -49,7 +49,7 @@ export const getTiktok = () => {
         "chat",
         JSON.stringify({
           user: data.uniqueId,
-          data: { action: "video", path: "video/sample6.webm" },
+          data: [{ action: "video", path: "video/sample6.webm" }],
         })
       );
     });
@@ -66,7 +66,7 @@ export const getTiktok = () => {
         "chat",
         JSON.stringify({
           user: data.uniqueId,
-          data: { action: "video", path: "video/sample6.webm" },
+          data: [{ action: "video", path: "video/sample6.webm" }],
         })
       );
     });

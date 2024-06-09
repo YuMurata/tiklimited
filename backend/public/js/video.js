@@ -37,7 +37,7 @@ const loadVideo = async (src) => {
 };
 
 const main = () => {
-  const evtSource = new EventSource("http://127.0.0.1:3000/sse");
+  const evtSource = new EventSource("/sse");
   const container = document.getElementById("superChatContainer");
   const asyncQueue = new AsyncQueue();
 
@@ -47,6 +47,7 @@ const main = () => {
       const data = JSON.parse(event.data);
 
       console.log(`triggered: ${JSON.stringify(data)}`);
+      console.log(`row_data: ${data}`);
       const filterdDatas = data.data.filter((x) => {
         return x.action === "video";
       });
