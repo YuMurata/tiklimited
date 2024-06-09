@@ -18,3 +18,7 @@ backend/frontend作成 https://ralacode.com/blog/post/create-nodejs-react-app-wi
 mui導入 https://zenn.dev/masaru0208/articles/153a69c8b21206
 表作る https://qiita.com/takiguchi-yu/items/4d6e2845402aa2d5f36a
 表作る https://zenn.dev/longbridge/articles/1ea4c93702fdfc
+カスタムフック/ファイル分割 https://qiita.com/FumioNonaka/items/62285e474608388cbbe3
+express使い方 https://www.i-ryo.com/entry/2020/04/16/215205
+expressファイル分割 https://www.tohoho-web.com/ex/express.html#routing
+express post https://qiita.com/TakeshiNickOsanai/items/b1720dcbe2bb5f9e524f

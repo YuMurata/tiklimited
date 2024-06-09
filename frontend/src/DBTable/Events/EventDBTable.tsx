@@ -2,6 +2,7 @@ import * as React from "react";
 import { DataGrid, GridRenderCellParams } from "@mui/x-data-grid";
 import Button from "@mui/material/Button";
 import DeleteButton from "./DeleteButton";
+import { useDB } from "./useEventsDB";
 
 // カラム
 const columns = [
@@ -28,21 +29,21 @@ const columns = [
         詳細
       </Button>
     ),
-    },
-    { field: "id", headerName: "ID", width: 100 },
+  },
+  { field: "id", headerName: "ID", width: 100 },
   { field: "event", headerName: "Event", width: 100 },
   { field: "action", headerName: "Action", width: 250 },
   { field: "name", headerName: "Name", width: 250 },
+  { field: "path", headerName: "Path", width: 250 },
 ];
 
 // データ
-const rows = [{ id: 1, event: "a", action: "b", name: "c" }];
-
-export default function DataGridDemo() {
+export default function EventDBTable() {
+  const {dbContents, setDBContents}=useDB();
   return (
     // <div style={{ height: 400, width: 600 }}>
     <div>
-      <DataGrid rows={rows} columns={columns} />
+      <DataGrid rows={dbContents} columns={columns} />
     </div>
   );
 }
