@@ -1,8 +1,16 @@
-import React, { useState } from 'react';
-import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
-import { GridRowId } from '@mui/x-data-grid';
+import React, { useState } from "react";
+import {
+  Box,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+} from "@mui/material";
+import { GridRowId } from "@mui/x-data-grid";
 
-const DeleteButtonDialog = (props: any) => {
+export default (props: any) => {
   const [open, setOpen] = useState(false); // 確認ダイアログの表示/非表示
 
   const handleOpen = () => {
@@ -13,14 +21,17 @@ const DeleteButtonDialog = (props: any) => {
     setOpen(false);
   };
 
-  const deleteRow = (rowId: GridRowId, e: React.MouseEvent<HTMLButtonElement>) => {
+  const deleteRow = (
+    rowId: GridRowId,
+    e: React.MouseEvent<HTMLButtonElement>
+  ) => {
     // (ここで削除処理)
     setOpen(false);
   };
 
   return (
-    <div>
-      <Button variant="outlined" color="primary" onClick={handleOpen}>
+    <Box>
+      <Button variant="outlined" color="error" onClick={handleOpen}>
         削除
       </Button>
       <Dialog
@@ -29,21 +40,26 @@ const DeleteButtonDialog = (props: any) => {
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id="alert-dialog-title">{'確認'}</DialogTitle>
+        <DialogTitle id="alert-dialog-title">{"確認"}</DialogTitle>
         <DialogContent>
-          <DialogContentText id="alert-dialog-description">ID「{props.rowId}」を本当に削除しますか？</DialogContentText>
+          <DialogContentText id="alert-dialog-description">
+            ID「{props.rowId}」を本当に削除しますか？
+          </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose} variant="outlined" color="primary" autoFocus>
+          <Button
+            onClick={handleClose}
+            variant="outlined"
+            color="primary"
+            autoFocus
+          >
             やめる
           </Button>
-          <Button onClick={(e) => deleteRow(props.rowId, e)} color="primary">
+          <Button onClick={(e) => deleteRow(props.rowId, e)} color="error">
             削除する
           </Button>
         </DialogActions>
       </Dialog>
-    </div>
+    </Box>
   );
 };
-
-export default DeleteButtonDialog;

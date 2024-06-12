@@ -3,20 +3,11 @@ import { DataGrid, GridRenderCellParams } from "@mui/x-data-grid";
 import Button from "@mui/material/Button";
 import DeleteButton from "../Events/DeleteButton";
 import { useDB } from "./useActionsDB";
+import { Box, Container, Grid, Stack } from "@mui/material";
+import AddButton from "./AddButton";
 
 // カラム
 const columns = [
-  // 削除ボタン
-  {
-    field: "deleteBtn",
-    headerName: "削除",
-    sortable: false,
-    width: 90,
-    disableClickEventBubbling: true,
-    renderCell: (params: GridRenderCellParams<any, string>) => (
-      <DeleteButton rowId={params.id} />
-    ),
-  },
   // 詳細ボタン
   {
     field: "editBtn",
@@ -30,19 +21,38 @@ const columns = [
       </Button>
     ),
   },
-  { field: "id", headerName: "ID", width: 100 },  
-  { field: "action", headerName: "Action", width: 250 },
   { field: "name", headerName: "Name", width: 250 },
+  { field: "action", headerName: "Action", width: 250 },
   { field: "path", headerName: "Path", width: 250 },
+  // 削除ボタン
+  {
+    field: "deleteBtn",
+    headerName: "削除",
+    sortable: false,
+    width: 90,
+    disableClickEventBubbling: true,
+    renderCell: (params: GridRenderCellParams<any, string>) => (
+      <DeleteButton rowId={params.id} />
+    ),
+  },
 ];
 
 // データ
 export default function () {
-  const {dbContents, setDBContents}=useDB();
+  const { dbContents, setDBContents } = useDB();
   return (
-    // <div style={{ height: 400, width: 600 }}>
-    <div>
-      <DataGrid rows={dbContents} columns={columns} />
-    </div>
+    <Grid
+      container
+      alignItems={"left"}
+      justifyContent={"left"}
+      direction={"column"}
+    >
+      <Grid item>
+        <AddButton />
+      </Grid>
+      <Grid item>
+        <DataGrid rows={dbContents} columns={columns} />
+      </Grid>
+    </Grid>
   );
 }

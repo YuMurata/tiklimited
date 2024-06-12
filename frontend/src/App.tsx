@@ -3,21 +3,55 @@ import EventDBTable from "./DBTable/Events/EventDBTable";
 import ActionDBTable from "./DBTable/Actions/ActionDBTable";
 import CreateDB from "./DBTable/Events/CreateDB";
 import { Tiktok } from "./Tiktok/Tiktok";
+import { Box, Container, Grid, Paper, Stack, Typography } from "@mui/material";
+import Modal from "react-modal";
 
 const App: React.FC = () => {
+  Modal.setAppElement("#root")
   return (
-    <div className="container fruitsList">
-      <h1>main</h1>
-      <div>{/* <EventDBTable /> */}</div>
-      <div>{/* <ActionDBTable /> */}</div>
-      <div>
-        <CreateDB />
-      </div>
-      <div>
-        <Tiktok />
-      </div>
-    </div>
+    <Grid
+      container
+      alignItems={"center"}
+      justifyContent={"center"}
+      direction={"column"}
+      spacing={2}
+    >
+      <Grid item>
+        <Typography variant="h3">TikLimited</Typography>
+      </Grid>
+
+      <Grid item>
+        <Grid
+          container
+          alignItems={"center"}
+          justifyContent={"center"}
+          direction={"row"}
+          spacing={2}
+        >
+          <Grid item>
+            <Grid
+              container
+              alignItems={"center"}
+              justifyContent={"center"}
+              direction={"column"}
+              spacing={2}
+            >
+              <Grid item>
+                <EventDBTable />
+              </Grid>
+
+              <Grid item>
+                <ActionDBTable />
+              </Grid>
+            </Grid>
+          </Grid>
+
+          <Grid item>
+            <Tiktok />
+          </Grid>
+        </Grid>
+      </Grid>
+    </Grid>
   );
 };
-
 export default App;

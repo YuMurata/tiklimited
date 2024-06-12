@@ -2,19 +2,23 @@ import express from "express";
 import { getEventDB } from "./src/db/events";
 import { getSSE } from "./src/sse";
 import { getTiktok } from "./src/tiktok";
-
-import { WebcastPushConnection } from "tiktok-live-connector";
 import bodyParser from "body-parser";
+import { getActionDB } from "./src/db/actions";
+import { getUpload } from "./src/upload/upload";
 
 const app: express.Express = express();
 const port = 8000;
 
 app.use(express.static("public"));
 app.use("/db/events", getEventDB());
+app.use("/db/actions", getActionDB());
 app.use("/sse", getSSE());
 app.use("/tiktok", getTiktok());
+app.use("/upload", getUpload());
+app.use("/storage", express.static("uploads"));
+
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json())
+app.use(bodyParser.json());
 
 app.get("/", (req: express.Request, res: express.Response) => {
   res.send("Hello, world!");

@@ -1,36 +1,31 @@
 import * as React from "react";
+import { useForm } from "react-hook-form";
 
 type EventsDBContent = {
-  id: number;
-  event: string;
+  trigger: string;
   action: string;
-  name: string;
-  path: string;
 };
 
 export const useDB = () => {
   const [dbContents, setDBContents] = React.useState<EventsDBContent[]>([]);
-  React.useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const res = await fetch("/db/events/read");
-        const json: EventsDBContent[] = await res.json();
-        const addedID = json.map(
-          (dbContent: EventsDBContent, index: number) => {
-            dbContent.id = index+1;
-            return dbContent;
-          }
-        );
-        setDBContents(addedID);
-      } catch (e: unknown) {
-        if (e instanceof Error) {
-          console.error(e.message);
-        }
-      }
-    };
+  const fetchData = async () => {
+    try {
+      const res = await fetch("/db/events/read");
+      const json: EventsDBContent[] = await res.json();
 
+      setDBContents(json);
+    } catch (e: unknown) {
+      if (e instanceof Error) {
+        console.error(e.message);
+      }
+    }
+  };
+
+  React.useEffect(() => {
     fetchData();
   }, []);
 
-  return { dbContents, setDBContents };
+  const { control, handleSubmit } = useForm<EventsDBContent>({});
+
+  return { dbContents, setDBContents ,control};
 };

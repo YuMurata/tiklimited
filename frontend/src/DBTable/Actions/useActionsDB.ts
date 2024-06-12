@@ -1,29 +1,24 @@
-import * as React from "react";
-
-type ActionsDBContent = {
-  id: number;
-  event: string;
-  action: string;
-  name: string;
-  path: string;
-};
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { ActionsDBContent } from "./Types";
 
 export const useDB = () => {
-  const [dbContents, setDBContents] = React.useState<ActionsDBContent[]>([]);
-  React.useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const res = await fetch("/db/actions/read");
-        const json: React.SetStateAction<ActionsDBContent[]> = await res.json();
-        setDBContents(json);
-      } catch (e: unknown) {
-        if (e instanceof Error) {
-          console.error(e.message);
-        }
-      }
-    };
+  const [dbContents, setDBContents] = useState<ActionsDBContent[]>([]);
 
-    fetchData();
+  const readActions = async () => {
+    try {
+      const res = await fetch("/db/actions/read");
+      const json: React.SetStateAction<ActionsDBContent[]> = await res.json();
+      setDBContents(json);
+    } catch (e: unknown) {
+      if (e instanceof Error) {
+        console.error(e.message);
+      }
+    }
+  };
+
+  useEffect(() => {
+    readActions();
   }, []);
 
   return { dbContents, setDBContents };

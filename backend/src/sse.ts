@@ -6,6 +6,8 @@ export const notifyEmitter = new EventEmitter();
 export const getSSE = () => {
   const router = Router();
 
+  console.log("export sse")
+
   router.get("/", (req: Request, res: Response) => {
     res.writeHead(200, {
       "Content-Type": "text/event-stream",
