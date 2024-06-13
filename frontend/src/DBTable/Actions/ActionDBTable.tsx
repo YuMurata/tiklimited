@@ -2,9 +2,10 @@ import * as React from "react";
 import { DataGrid, GridRenderCellParams } from "@mui/x-data-grid";
 import Button from "@mui/material/Button";
 import DeleteButton from "../Events/DeleteButton";
-import { useDB } from "./useActionsDB";
+import { useActionDB } from "./useActionsDB";
 import { Box, Container, Grid, Stack } from "@mui/material";
 import AddButton from "./AddButton";
+import { useAddModal } from "./useAddModal";
 
 // カラム
 const columns = [
@@ -39,7 +40,8 @@ const columns = [
 
 // データ
 export default function () {
-  const { dbContents, setDBContents } = useDB();
+  const { dbContents, setDBContents } = useActionDB();
+
   return (
     <Grid
       container
@@ -48,10 +50,16 @@ export default function () {
       direction={"column"}
     >
       <Grid item>
-        <AddButton />
+        <AddButton setDBContents={setDBContents}/>
       </Grid>
       <Grid item>
-        <DataGrid rows={dbContents} columns={columns} />
+        <DataGrid
+          rows={dbContents}
+          columns={columns}
+          getRowId={(row) => {
+            return row.name;
+          }}
+        />
       </Grid>
     </Grid>
   );

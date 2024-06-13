@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { ActionsDBContent } from "./Types";
 
-export const useDB = () => {
+export const useActionDB = () => {
   const [dbContents, setDBContents] = useState<ActionsDBContent[]>([]);
 
   const readActions = async () => {

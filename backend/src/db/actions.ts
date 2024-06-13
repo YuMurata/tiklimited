@@ -1,14 +1,18 @@
 import { Router, Request, Response } from "express";
 import { initDB } from "./init";
 import { Database } from "sqlite3";
+import bodyParser from "body-parser";
 
 export const getActionDB = () => {
   const router = Router();
-  initDB();
-  const db = new Database(`${process.cwd()}/db/test.db`);
+  router.use(bodyParser.urlencoded({ extended: true }));
+  router.use(bodyParser.json());
 
+  initDB();
+  
   router.post("/create", (req: Request, res: Response) => {
     console.log(req.body);
+    const db = new Database(`${process.cwd()}/db/test.db`);
     db.serialize(() => {
       db.run(
         "insert into actions(name, action, path) values(?,?,?)",
@@ -22,10 +26,8 @@ export const getActionDB = () => {
         res.send(rows);
       });
     });
-
-    db.all("select * from actions", (err, rows) => {
-      res.send(rows);
-    });
+    
+    db.close();
   });
 
   router.get("/read", (req: Request, res: Response) => {
@@ -49,6 +51,6 @@ export const getActionDB = () => {
     });
   });
 
-  db.close();
+  
   return router;
 };

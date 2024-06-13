@@ -12,6 +12,8 @@ import { GridRowId } from "@mui/x-data-grid";
 import Modal from "react-modal";
 import AddAction from "./AddAction";
 import { useAddModal } from "./useAddModal";
+import { useActionDB } from "./useActionsDB";
+import { DBProps } from "./Types";
 
 const customStyles = {
   content: {
@@ -25,8 +27,9 @@ const customStyles = {
   },
 };
 
-export default (props: any) => {
-  const { open, handleOpen, handleClose, addAction, control } = useAddModal();
+export default (dbProps: DBProps) => {
+  const props = useAddModal(dbProps.setDBContents);
+  const { open, handleOpen } = props;
 
   return (
     <Box>
@@ -34,11 +37,7 @@ export default (props: any) => {
         add event
       </Button>
       <Modal isOpen={open} style={customStyles}>
-        <AddAction
-          addAction={addAction}
-          handleClose={handleClose}
-          control={control}
-        />
+        <AddAction {...props} />
       </Modal>
     </Box>
   );

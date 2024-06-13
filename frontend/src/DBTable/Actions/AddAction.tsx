@@ -9,23 +9,13 @@ import {
   Select,
   TextField,
 } from "@mui/material";
-import { Control, Controller } from "react-hook-form";
-import { useDB } from "./useActionsDB";
+import { Controller } from "react-hook-form";
 import Upload from "./Upload";
-import { useAddModal } from "./useAddModal";
-import { ActionData, ActionsDBContent } from "./Types";
+import { ModalProps } from "./Types";
 
-const Actions = ["play video"];
+const Actions = ["video"];
 
-type Props = {
-  control: Control<ActionData, any>;
-  handleClose: () => void;
-  addAction: (
-    e?: React.BaseSyntheticEvent<object, any, any> | undefined
-  ) => Promise<any>;
-};
-
-export default (props: Props) => {
+export default (props: ModalProps) => {
   const { control, handleClose, addAction } = props;
 
   return (
@@ -57,7 +47,7 @@ export default (props: Props) => {
             <Controller
               name="action"
               control={control}
-              defaultValue="play video"
+              defaultValue={Actions[0]}
               rules={{
                 required: { value: true, message: "必須入力" },
               }}
