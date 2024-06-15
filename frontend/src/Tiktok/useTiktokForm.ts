@@ -36,8 +36,8 @@ export const useTiktokForm = () => {
         return;
       }
 
-      setConnected(true);
       setConnecting(false);
+      setConnected(true);
     };
     setConnected(false);
     setConnecting(true);

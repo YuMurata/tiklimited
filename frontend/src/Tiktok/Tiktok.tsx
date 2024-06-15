@@ -15,31 +15,11 @@ export const Tiktok: React.FC = () => {
 
   const ConnectIcon = () => {
     if (isConnecting) {
-      return (
-        <Grid container direction={"row"} alignItems={"center"}>
-          <Grid item>
-            <CircularProgress size={20}/>
-          </Grid>
-          <Grid item>
-            <OnlinePredictionIcon color="success" fontSize="large" />
-          </Grid>
-        </Grid>
-      );
+      return <CircularProgress size={20} />;
     }
     if (isConnected) {
       return <OnlinePredictionIcon color="success" fontSize="large" />;
     }
-    // return (
-    //   <Box minWidth={"100"}>
-    //     {/* {isConnecting ? (
-    //       <CircularProgress />
-    //     ) : (
-    //       isConnected && (
-    //         <OnlinePredictionIcon color="success" fontSize="large" />
-    //       )
-    //     )} */}
-    //   </Box>
-    // );
   };
 
   return (
@@ -74,7 +54,7 @@ export const Tiktok: React.FC = () => {
                   <Button
                     onClick={onConnect}
                     variant="contained"
-                    fullWidth={true}                    
+                    fullWidth={true}
                   >
                     connect
                   </Button>

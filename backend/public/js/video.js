@@ -1,11 +1,11 @@
 const playVideo = (video) => {
   return new Promise((resolve) => {
-    video.addEventListener("ended",()=>{
+    video.addEventListener("ended", () => {
       console.log("resolve");
-      resolve();      
-    })
-    console.log("play")
-    video.play()
+      resolve();
+    });
+    console.log("play");
+    video.play();
   });
 };
 
@@ -53,11 +53,11 @@ const main = () => {
       });
       console.log(`filtered: ${JSON.stringify(filterdDatas)}`);
       filterdDatas.forEach((filterdData) => {
-        loadVideo(filterdData.path).then((video) => {
+        loadVideo(`storage/${filterdData.path}`).then((video) => {
           console.log(`${data.user} send gift`);
           asyncQueue.enqueue(asyncTask(video, container));
         });
-      });      
+      });
     },
     false
   );

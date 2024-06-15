@@ -1,32 +1,36 @@
-import { Router, Request, Response } from "express";
+import { Router, Request, Response, NextFunction } from "express";
 import { initDB } from "./init";
 import { Database } from "sqlite3";
+import bodyParser from "body-parser";
 
 export const getEventDB = () => {
   const router = Router();
+  router.use(bodyParser.urlencoded({ extended: true }));
+  router.use(bodyParser.json());
   initDB();
 
   router.post("/create", (req: Request, res: Response) => {
     const db = new Database(`${process.cwd()}/db/test.db`);
 
     console.log(req.body);
+    var status = 200;
     db.serialize(() => {
       db.run(
         "insert into events(trigger, action) values(?,?)",
-        "gift",
-        "play video"
+        [req.body.trigger, req.body.action],
+        (error) => {
+          if (error) {
+            console.log(`error:${error}`);
+            status = 404;
+          }
+        }
       );
 
       db.all("select * from events", (err1, rows) => {
-        console.log(rows);
-        res.send("ok");
+        return res.status(status).send(rows);
       });
     });
-    db.close();
 
-    db.all("select * from events", (err, rows) => {
-      res.send(rows);
-    });
     db.close();
   });
 
@@ -45,11 +49,22 @@ export const getEventDB = () => {
     });
   });
 
-  router.get("/delete", (req: Request, res: Response) => {
+  router.post("/delete", (req: Request, res: Response) => {
     const db = new Database(`${process.cwd()}/db/test.db`);
-    db.all("select * from events", (err, rows) => {
-      res.send(rows);
+
+    console.log(`delete ${req.body}`);
+    db.serialize(() => {
+      db.run(
+        "delete from events where trigger = ? and action = ?",
+        req.body.trigger,
+        req.body.action
+      );
+
+      db.all("select * from events", (err, rows) => {
+        res.send(rows);
+      });
     });
+    db.close();
   });
 
   return router;

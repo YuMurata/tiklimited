@@ -1,10 +1,12 @@
 import * as React from "react";
 import { useForm } from "react-hook-form";
 
-type EventsDBContent = {
+export type EventsDBContent = {
   trigger: string;
   action: string;
 };
+
+export type DBProps = ReturnType<typeof useDB>;
 
 export const useDB = () => {
   const [dbContents, setDBContents] = React.useState<EventsDBContent[]>([]);
@@ -27,5 +29,5 @@ export const useDB = () => {
 
   const { control, handleSubmit } = useForm<EventsDBContent>({});
 
-  return { dbContents, setDBContents ,control};
+  return { dbContents, setDBContents, control };
 };

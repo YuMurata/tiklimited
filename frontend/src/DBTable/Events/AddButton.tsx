@@ -11,6 +11,8 @@ import {
 import { GridRowId } from "@mui/x-data-grid";
 import Modal from "react-modal";
 import AddEvent from "./AddEvent";
+import { DBProps } from "./useEventsDB";
+import { useAddModal } from "./useAddModal";
 
 const customStyles = {
   content: {
@@ -24,24 +26,9 @@ const customStyles = {
   },
 };
 
-export default (props: any) => {
-  const [open, setOpen] = useState(false); // 確認ダイアログの表示/非表示
-
-  const handleOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
-
-  const deleteRow = (
-    rowId: GridRowId,
-    e: React.MouseEvent<HTMLButtonElement>
-  ) => {
-    // (ここで削除処理)
-    setOpen(false);
-  };
+export default (dbProps: DBProps) => {
+  const props = useAddModal(dbProps.setDBContents);
+  const { handleOpen, open } = props;
 
   return (
     <Box>
@@ -49,7 +36,7 @@ export default (props: any) => {
         add event
       </Button>
       <Modal isOpen={open} style={customStyles}>
-        <AddEvent />
+        <AddEvent {...props} />
       </Modal>
     </Box>
   );

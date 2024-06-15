@@ -3,6 +3,7 @@ import { WebcastPushConnection } from "tiktok-live-connector";
 import bodyParser from "body-parser";
 import { notifyEmitter } from "./sse";
 import { InvalidatedProjectKind } from "typescript";
+import { Database } from "sqlite3";
 
 export const getTiktok = () => {
   const router = Router();
@@ -24,7 +25,9 @@ export const getTiktok = () => {
     tiktokLiveSession?.disconnect();
 
     // Create a new wrapper object and pass the username
-    tiktokLiveSession = new WebcastPushConnection(tiktokID);
+    tiktokLiveSession = new WebcastPushConnection(tiktokID, {
+      enableExtendedGiftInfo: true,
+    });
 
     // Connect to the chat (await can be used as well)
     tiktokLiveSession
@@ -41,34 +44,49 @@ export const getTiktok = () => {
     // Define the events that you want to handle
     // In this case we listen to chat messages (comments)
     tiktokLiveSession.on("chat", (data) => {
-      console.log(
-        `chat: ${data.uniqueId} (userId:${data.userId}) writes: ${data.comment}`
-      );
-
-      notifyEmitter.emit(
-        "chat",
-        JSON.stringify({
-          user: data.uniqueId,
-          data: [{ action: "video", path: "video/sample6.webm" }],
-        })
-      );
+      // console.log(
+      //   `chat: ${data.uniqueId} (userId:${data.userId}) writes: ${data.comment}`
+      // );
+      // notifyEmitter.emit(
+      //   "chat",
+      //   JSON.stringify({
+      //     user: data.uniqueId,
+      //     data: [{ action: "video", path: "video/sample6.webm" }],
+      //   })
+      // );
     });
 
     // And here we receive gifts sent to the streamer
     tiktokLiveSession.on("gift", (data) => {
+      const giftName = data.extendedGiftInfo.name;
       console.log(
-        `gift: ${data.uniqueId} (userId:${data.userId}) sends ${data.giftId}`
+        `gift: ${data.uniqueId} (userId:${data.userId}) sends ${giftName}`
       );
 
-      //   console.log(`gift: ${JSON.stringify(dbEvents.gift)}`);
-      //   dbEvents.gift.forEach((x) => {
-      notifyEmitter.emit(
-        "chat",
-        JSON.stringify({
-          user: data.uniqueId,
-          data: [{ action: "video", path: "video/sample6.webm" }],
-        })
-      );
+      const db = new Database(`${process.cwd()}/db/test.db`);
+      db.serialize(() => {
+        db.all(
+          "select * from actions where name = (select action from events where trigger = ?)",
+          [giftName],
+          (
+            err: Error,
+            rows: { action: string; path: string; name: string }[]
+          ) => {
+            console.log(rows);
+            rows.forEach((row) => {
+              notifyEmitter.emit(
+                "chat",
+                JSON.stringify({
+                  user: data.uniqueId,
+                  data: [{ action: row.action, path: row.path }],
+                })
+              );
+            });
+          }
+        );
+      });
+
+      db.close();
     });
   });
 

@@ -8,26 +8,19 @@ import {
   DialogContentText,
   DialogTitle,
 } from "@mui/material";
-import { GridRowId } from "@mui/x-data-grid";
+import { GridRenderCellParams, GridRowId } from "@mui/x-data-grid";
+import { useDeleteDialog } from "./useDeleteDialog";
+import { DBProps } from "./useEventsDB";
 
-export default (props: any) => {
-  const [open, setOpen] = useState(false); // 確認ダイアログの表示/非表示
+export type DeleteProps = {
+  params: GridRenderCellParams<any, string>;
+  dbProps: DBProps;
+};
 
-  const handleOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
-
-  const deleteRow = (
-    rowId: GridRowId,
-    e: React.MouseEvent<HTMLButtonElement>
-  ) => {
-    // (ここで削除処理)
-    setOpen(false);
-  };
+export default (props: DeleteProps) => {
+  const { handleOpen, handleClose, open, deleteRow } = useDeleteDialog(
+    props.dbProps
+  );
 
   return (
     <Box>
@@ -41,11 +34,13 @@ export default (props: any) => {
         aria-describedby="alert-dialog-description"
       >
         <DialogTitle id="alert-dialog-title">{"確認"}</DialogTitle>
+
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            ID「{props.rowId}」を本当に削除しますか？
+            ID「{props.params.id}」を本当に削除しますか？
           </DialogContentText>
         </DialogContent>
+
         <DialogActions>
           <Button
             onClick={handleClose}
@@ -55,7 +50,7 @@ export default (props: any) => {
           >
             やめる
           </Button>
-          <Button onClick={(e) => deleteRow(props.rowId, e)} color="error">
+          <Button onClick={(e) => deleteRow(props.params.row, e)} color="error">
             削除する
           </Button>
         </DialogActions>

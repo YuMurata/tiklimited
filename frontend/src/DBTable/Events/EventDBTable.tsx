@@ -1,6 +1,6 @@
-import * as React from "react";
 import {
   DataGrid,
+  GridColDef,
   GridRenderCellParams,
   GridToolbarColumnsButton,
   GridToolbarContainer,
@@ -11,47 +11,44 @@ import {
 import Button from "@mui/material/Button";
 import DeleteButton from "./DeleteButton";
 import AddButton from "./AddButton";
-import { useDB } from "./useEventsDB";
+import { EventsDBContent, useDB } from "./useEventsDB";
 import { Box, Container, Grid, Stack, Typography } from "@mui/material";
-import { FolderOffTwoTone } from "@mui/icons-material";
+import { FolderOffTwoTone, Info } from "@mui/icons-material";
 
 // カラム
-const columns = [
-  // 詳細ボタン
-  {
-    field: "editBtn",
-    headerName: "詳細",
-    sortable: false,
-    width: 90,
-    disableClickEventBubbling: true,
-    renderCell: (params: GridRenderCellParams) => (
-      <Button variant="contained" color="primary">
-        詳細
-      </Button>
-    ),
-  },
-  // { field: "id", headerName: "ID", width: 100 },
-  { field: "event", headerName: "Event", width: 100 },
-  { field: "action", headerName: "Action", width: 250 },
-  { field: "name", headerName: "Name", width: 250 },
-  { field: "path", headerName: "Path", width: 250 },
-  // 削除ボタン
-  {
-    field: "deleteBtn",
-    headerName: "削除",
-    sortable: false,
-    width: 90,
-    disableClickEventBubbling: true,
-    renderCell: (params: GridRenderCellParams<any, string>) => (
-      <DeleteButton rowId={params.id} />
-      // <Button>test</Button>
-    ),
-  },
-];
 
 // データ
 export default function EventDBTable() {
-  const { dbContents } = useDB();
+  const props = useDB();
+  const { dbContents } = props;
+
+  const columns: GridColDef<EventsDBContent>[] = [
+    // 削除ボタン
+    {
+      field: "deleteBtn",
+      headerName: "削除",
+      sortable: false,
+      width: 90,
+      renderCell: (params: GridRenderCellParams<any, string>) => (
+        <DeleteButton params={params} dbProps={props} />
+      ),
+    },
+    // 詳細ボタン
+    {
+      field: "editBtn",
+      headerName: "詳細",
+      sortable: false,
+      width: 90,
+      renderCell: (params: GridRenderCellParams) => (
+        <Button variant="contained" color="primary">
+          詳細
+        </Button>
+      ),
+    },
+    { field: "trigger", headerName: "Trigger", width: 100 },
+    { field: "action", headerName: "Action", width: 250 },
+  ];
+
   const CustomNoRowsOverlay = () => {
     return (
       <Container maxWidth="lg">
@@ -97,11 +94,10 @@ export default function EventDBTable() {
       direction={"column"}
     >
       <Grid item>
-        <AddButton />
+        <AddButton {...props} />
       </Grid>
       <Grid item>
         <DataGrid
-          // rows={dbContents}
           rows={dbContents}
           columns={columns}
           autoHeight

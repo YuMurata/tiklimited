@@ -7,7 +7,7 @@ import { Box, Container, Grid, Paper, Stack, Typography } from "@mui/material";
 import Modal from "react-modal";
 
 const App: React.FC = () => {
-  Modal.setAppElement("#root")
+  Modal.setAppElement("#root");
   return (
     <Grid
       container
@@ -37,11 +37,11 @@ const App: React.FC = () => {
               spacing={2}
             >
               <Grid item>
-                <EventDBTable />
+                <ActionDBTable />
               </Grid>
 
               <Grid item>
-                <ActionDBTable />
+                <EventDBTable />
               </Grid>
             </Grid>
           </Grid>

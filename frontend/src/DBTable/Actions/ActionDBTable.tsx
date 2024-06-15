@@ -1,46 +1,92 @@
 import * as React from "react";
-import { DataGrid, GridRenderCellParams } from "@mui/x-data-grid";
+import {
+  DataGrid,
+  GridRenderCellParams,
+  GridToolbarColumnsButton,
+  GridToolbarContainer,
+  GridToolbarDensitySelector,
+  GridToolbarExport,
+  GridToolbarFilterButton,
+} from "@mui/x-data-grid";
 import Button from "@mui/material/Button";
-import DeleteButton from "../Events/DeleteButton";
+import DeleteButton from "./DeleteButton";
 import { useActionDB } from "./useActionsDB";
-import { Box, Container, Grid, Stack } from "@mui/material";
+import { Box, Container, Grid, Stack, Typography } from "@mui/material";
 import AddButton from "./AddButton";
 import { useAddModal } from "./useAddModal";
-
-// カラム
-const columns = [
-  // 詳細ボタン
-  {
-    field: "editBtn",
-    headerName: "詳細",
-    sortable: false,
-    width: 90,
-    disableClickEventBubbling: true,
-    renderCell: (params: GridRenderCellParams) => (
-      <Button variant="contained" color="primary">
-        詳細
-      </Button>
-    ),
-  },
-  { field: "name", headerName: "Name", width: 250 },
-  { field: "action", headerName: "Action", width: 250 },
-  { field: "path", headerName: "Path", width: 250 },
-  // 削除ボタン
-  {
-    field: "deleteBtn",
-    headerName: "削除",
-    sortable: false,
-    width: 90,
-    disableClickEventBubbling: true,
-    renderCell: (params: GridRenderCellParams<any, string>) => (
-      <DeleteButton rowId={params.id} />
-    ),
-  },
-];
+import { FolderOffTwoTone } from "@mui/icons-material";
 
 // データ
 export default function () {
-  const { dbContents, setDBContents } = useActionDB();
+  const props = useActionDB();
+  const { dbContents } = props;
+
+  // カラム
+  const columns = [
+    // 削除ボタン
+    {
+      field: "deleteBtn",
+      headerName: "削除",
+      sortable: false,
+      width: 90,
+      disableClickEventBubbling: true,
+      renderCell: (params: GridRenderCellParams<any, string>) => (
+        <DeleteButton params={params} dbProps={props} />
+      ),
+    },
+    // 詳細ボタン
+    {
+      field: "editBtn",
+      headerName: "詳細",
+      sortable: false,
+      width: 90,
+      disableClickEventBubbling: true,
+      renderCell: (params: GridRenderCellParams) => (
+        <Button variant="contained" color="primary">
+          詳細
+        </Button>
+      ),
+    },
+    { field: "name", headerName: "Name", width: 250 },
+    { field: "action", headerName: "Action", width: 250 },
+    { field: "path", headerName: "Path", width: 250 },
+  ];
+
+  const CustomNoRowsOverlay = () => {
+    return (
+      <Container maxWidth="lg">
+        <Stack justifyContent={"center"} alignContent={"center"}>
+          <FolderOffTwoTone fontSize="large" />
+          <Typography>no items</Typography>
+        </Stack>
+      </Container>
+    );
+  };
+
+  const CustomToolbar = () => {
+    return (
+      <Stack direction={"column"}>
+        <Box display={"flex"} justifyContent={"center"}>
+          <Typography variant="h5">Actions</Typography>
+        </Box>
+
+        <GridToolbarContainer>
+          <GridToolbarColumnsButton />
+          <GridToolbarFilterButton />
+          <GridToolbarDensitySelector
+            slotProps={{ tooltip: { title: "Change density" } }}
+          />
+          <Box sx={{ flexGrow: 1 }} />
+          <GridToolbarExport
+            slotProps={{
+              tooltip: { title: "Export data" },
+              button: { variant: "outlined" },
+            }}
+          />
+        </GridToolbarContainer>
+      </Stack>
+    );
+  };
 
   return (
     <Grid
@@ -50,12 +96,13 @@ export default function () {
       direction={"column"}
     >
       <Grid item>
-        <AddButton setDBContents={setDBContents}/>
+        <AddButton {...props} />
       </Grid>
       <Grid item>
         <DataGrid
           rows={dbContents}
           columns={columns}
+          slots={{ noRowsOverlay: CustomNoRowsOverlay, toolbar: CustomToolbar }}
           getRowId={(row) => {
             return row.name;
           }}
