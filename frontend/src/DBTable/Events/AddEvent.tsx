@@ -5,8 +5,7 @@ import {
   Grid,
   InputLabel,
   MenuItem,
-  Select,
-  TextField,
+  Select,  
 } from "@mui/material";
 import { Controller } from "react-hook-form";
 import { AddModalProps } from "./useAddModal";
@@ -16,7 +15,22 @@ type Triggers = {
   gift: string;
 };
 
-const gifts = ["Rose", "Heart", "Coffe", "Heart Me"];
+const gifts = [
+  "Rose",
+  "Heart",
+  "Coffe",
+  "Heart Me",
+  "Perfume",
+  "Doughnut",
+  "Paper Crane",
+  "Marvelous Confetti",
+  "Confetti",
+  "Corgi",
+  "Money Gun",
+  "Gem Gun",
+  "Team Bracelet",
+  "Cheer You Up"
+];
 
 export default (props: AddModalProps) => {
   const { control, handleClose, addEvent } = props;

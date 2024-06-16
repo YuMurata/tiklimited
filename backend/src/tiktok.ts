@@ -5,6 +5,11 @@ import { notifyEmitter } from "./sse";
 import { InvalidatedProjectKind } from "typescript";
 import { Database } from "sqlite3";
 
+type GiftURL = {
+  name: string;
+  imageURL: string;
+};
+
 export const getTiktok = () => {
   const router = Router();
   router.use(bodyParser.urlencoded({ extended: true }));
@@ -13,6 +18,7 @@ export const getTiktok = () => {
   const connectRetry = 10;
 
   var tiktokLiveSession: WebcastPushConnection | null = null;
+  var giftURLs: GiftURL[] = [];
 
   router.get("/status", (req: Request, res: Response) => {
     res.send(tiktokLiveSession?.getState());
@@ -39,6 +45,26 @@ export const getTiktok = () => {
       .catch((err: Error) => {
         console.error("Failed to connect", err);
         return res.status(500).send("Failed to connect");
+      });
+
+    tiktokLiveSession
+      .getAvailableGifts()
+      .then((giftList) => {
+        giftURLs = giftList.map((gift: any): GiftURL => {
+          return {
+            name: gift.name,
+            imageURL: `https://p16-webcast.tiktokcdn.com/img/maliva/${gift.image.uri}~tplv-obj.webp`,
+          };
+        });
+        console.log(giftURLs);
+        // giftList.forEach((gift:any) => {
+        //   console.log(
+        //     `id: ${gift.id}, name: ${gift.name}, cost: ${gift.diamond_count}`
+        //   );
+        // });
+      })
+      .catch((err) => {
+        console.error(err);
       });
 
     // Define the events that you want to handle
