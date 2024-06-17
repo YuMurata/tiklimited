@@ -33,7 +33,19 @@ const asyncTask = (video, container) => {
 const loadVideo = async (src) => {
   var video = document.createElement("video");
   video.setAttribute("src", src);
+  video.setAttribute("style", "position:absolute; top:0; left:0;");
   return video;
+};
+
+const playVideo2 = () => {
+  return new Promise((resolve) => {
+    video.addEventListener("ended", () => {
+      console.log("resolve");
+      resolve();
+    });
+    console.log("play");
+    video.play();
+  });
 };
 
 const main = () => {
@@ -55,7 +67,12 @@ const main = () => {
       filterdDatas.forEach((filterdData) => {
         loadVideo(`storage/${filterdData.path}`).then((video) => {
           console.log(`${data.user} send gift`);
-          asyncQueue.enqueue(asyncTask(video, container));
+          // asyncQueue.enqueue(asyncTask(video, container));
+          container.appendChild(video);
+          video.addEventListener("ended", () => {
+            container.removeChild(video);
+          });
+          video.play();
         });
       });
     },
@@ -73,4 +90,32 @@ const main = () => {
   console.log("add event");
 };
 
+const randomPlay = () => {
+  const container = document.getElementById("superChatContainer");
+
+  var video;
+  loadVideo("/storage/shotcut.webm").then((_video) => {
+    video = _video;
+  });
+  const func = () => {
+    var random = Math.random() * 0.9 + 0.1;
+    setTimeout(async () => {
+      container.appendChild(video);
+      console.log(container);
+      video.addEventListener("ended", () => {
+        container.removeChild(video);
+        console.log(container);
+      });
+      video.play();
+
+      func();
+    }, random);
+  };
+
+  for (var i = 0; i < 100; ++i) {
+    func();
+  }
+};
+
 main();
+// randomPlay();
