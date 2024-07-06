@@ -83,7 +83,7 @@ export default (props: AddModalProps) => {
                   error={fieldState.invalid}
                   sx={{ minWidth: 120 }}
                 >
-                  <InputLabel id="area-label">trigger</InputLabel>
+                  <InputLabel id="area-label">action</InputLabel>
                   <Select {...field} label="action">
                     {dbContents?.map((value) => (
                       <MenuItem key={value.name} value={value.name}>

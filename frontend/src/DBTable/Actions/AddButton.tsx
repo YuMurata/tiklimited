@@ -34,7 +34,7 @@ export default (dbProps: DBProps) => {
   return (
     <Box>
       <Button variant="contained" color="info" onClick={handleOpen}>
-        add event
+        add action
       </Button>
       <Modal isOpen={open} style={customStyles}>
         <AddAction {...props} />
