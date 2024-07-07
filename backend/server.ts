@@ -5,6 +5,7 @@ import { getTiktok } from "./src/tiktok";
 import bodyParser from "body-parser";
 import { getActionDB } from "./src/db/actions";
 import { getUpload } from "./src/upload/upload";
+import { getEximport } from "./src/db/eximport";
 
 const app: express.Express = express();
 const port = 8000;
@@ -15,6 +16,7 @@ app.use("/db/actions", getActionDB());
 app.use("/sse", getSSE());
 app.use("/tiktok", getTiktok());
 app.use("/upload", getUpload());
+app.use("/eximport", getEximport());
 app.use("/storage", express.static("uploads"));
 
 app.use(bodyParser.urlencoded({ extended: true }));

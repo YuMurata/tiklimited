@@ -1,7 +1,7 @@
 import * as React from "react";
 import EventDBTable from "./DBTable/Events/EventDBTable";
 import ActionDBTable from "./DBTable/Actions/ActionDBTable";
-import CreateDB from "./DBTable/Events/CreateDB";
+import Export from "./DBTable/Export/Export";
 import { Tiktok } from "./Tiktok/Tiktok";
 import { Box, Container, Grid, Paper, Stack, Typography } from "@mui/material";
 import Modal from "react-modal";
@@ -47,7 +47,21 @@ const App: React.FC = () => {
           </Grid>
 
           <Grid item>
-            <Tiktok />
+            <Grid
+              container
+              alignItems={"center"}
+              justifyContent={"center"}
+              direction={"column"}
+              spacing={2}
+            >
+              <Grid item>
+                <Tiktok />
+              </Grid>
+
+              <Grid item>
+                <Export />
+              </Grid>
+            </Grid>
           </Grid>
         </Grid>
       </Grid>
