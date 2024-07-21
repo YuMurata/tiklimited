@@ -1,4 +1,3 @@
-import * as React from "react";
 import {
   DataGrid,
   GridRenderCellParams,
@@ -10,16 +9,16 @@ import {
 } from "@mui/x-data-grid";
 import Button from "@mui/material/Button";
 import DeleteButton from "./DeleteButton";
-import { useActionDB } from "./useActionsDB";
 import { Box, Container, Grid, Stack, Typography } from "@mui/material";
 import AddButton from "./AddButton";
-import { useAddModal } from "./useAddModal";
 import { FolderOffTwoTone } from "@mui/icons-material";
+import { useSharedActionsDB } from "./sharedContext";
 
 // データ
 export default function () {
-  const props = useActionDB();
+  const props = useSharedActionsDB();
   const { dbContents } = props;
+  console.log(`actions: ${dbContents}`)
 
   // カラム
   const columns = [

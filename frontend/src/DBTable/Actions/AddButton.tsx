@@ -1,19 +1,8 @@
-import React, { useState } from "react";
-import {
-  Box,
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-} from "@mui/material";
-import { GridRowId } from "@mui/x-data-grid";
+import { Box, Button } from "@mui/material";
 import Modal from "react-modal";
 import AddAction from "./AddAction";
 import { useAddModal } from "./useAddModal";
-import { useActionDB } from "./useActionsDB";
-import { DBProps } from "./Types";
+import { DBProps } from "./useActionsDB";
 
 const customStyles = {
   content: {

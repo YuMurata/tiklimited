@@ -9,7 +9,7 @@ import {
 } from "@mui/material";
 import { Controller } from "react-hook-form";
 import { AddModalProps } from "./useAddModal";
-import { useActionDB } from "../Actions/useActionsDB";
+import { useSharedActionsDB } from "../Actions/sharedContext";
 
 type Triggers = {
   gift: string;
@@ -35,7 +35,7 @@ const gifts = [
 export default (props: AddModalProps) => {
   const { control, handleClose, addEvent } = props;
 
-  const { dbContents } = useActionDB();
+  const { dbContents } = useSharedActionsDB();
 
   return (
     <Grid container direction={"column"}>

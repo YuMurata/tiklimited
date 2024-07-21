@@ -1,19 +1,20 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { ActionsDBContent } from "../Actions/Types";
-
-export type EventsDBContent = {
-  trigger: string;
-  action: string;
-};
+import { EventsDBContent } from "../Events/useEventsDB";
+import { useSharedActionsDB } from "../Actions/sharedContext";
+import { useSharedEventsDB } from "../Events/sharedContext";
 
 export type AddModalProps = ReturnType<typeof useExport>;
 
 export const useExport = (
-  setDBContents: React.Dispatch<React.SetStateAction<EventsDBContent[]>>
+
 ) => {
   const [open, setOpen] = useState(false);
   const { control, handleSubmit } = useForm<EventsDBContent>({});
+  const [file, setFile] = useState<File | null>();
+
+  const actionsContext = useSharedActionsDB()
+  const eventsContext = useSharedEventsDB()
 
   const handleOpen = () => {
     setOpen(true);
@@ -24,12 +25,12 @@ export const useExport = (
     setOpen(false);
   };
 
-  const readEvents = async () => {
+  const exportDatas = async () => {
     try {
-      const res = await fetch("/db/events/read");
-      const json: EventsDBContent[] = await res.json();
+      const res = await fetch("/eximport/export");
+      // const json: EventsDBContent[] = await res.json();
 
-      return json
+      return res;
     } catch (e: unknown) {
       if (e instanceof Error) {
         console.error(e.message);
@@ -37,26 +38,42 @@ export const useExport = (
     }
   };
 
-  const readActions = async () => {
-    try {
-      const res = await fetch("/db/actions/read");
-      const json: ActionsDBContent[] = await res.json();
+  const uploadFile = async () => {
+    if (file) {
+      try {
+        const form = new FormData();
+        form.append("file", file);
+        const upload_res = await fetch("/eximport/import", {
+          method: "POST",
+          body: form,
+        });
 
-      return json
-    } catch (e: unknown) {
-      if (e instanceof Error) {
-        console.error(e.message);
+        const upload_json = await upload_res.json();
+        if (!upload_json) {
+          throw new Error(upload_json);
+        }
+
+        actionsContext.setDBContents(upload_json.actions)
+        eventsContext.setDBContents(upload_json.events)
+
+        console.log(`export: ${actionsContext.dbContents}`)
+        return upload_json;
+      } catch (e: unknown) {
+        if (e instanceof Error) {
+          console.error(e.message);
+        }
       }
     }
   };
 
-  const onClick = async ()=>{
-    const events = await readEvents()
-    const actions = await readActions()
-
-    
-
-  }
-
-  return { open, control, handleOpen, handleClose, addEvent };
+  return {
+    open,
+    control,
+    handleOpen,
+    handleClose,
+    exportDatas,
+    uploadFile,
+    file,
+    setFile,
+  };
 };

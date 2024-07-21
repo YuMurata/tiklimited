@@ -14,12 +14,14 @@ import AddButton from "./AddButton";
 import { EventsDBContent, useDB } from "./useEventsDB";
 import { Box, Container, Grid, Stack, Typography } from "@mui/material";
 import { FolderOffTwoTone, Info } from "@mui/icons-material";
+import { useSharedEventsDB } from "./sharedContext";
 
 // カラム
 
 // データ
 export default function EventDBTable() {
-  const props = useDB();
+  const props = useSharedEventsDB();
+  console.log(typeof props);
   const { dbContents } = props;
 
   const columns: GridColDef<EventsDBContent>[] = [

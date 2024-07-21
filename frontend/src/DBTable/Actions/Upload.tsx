@@ -1,10 +1,8 @@
-import { Box, Button, FormControl } from "@mui/material";
+import { Box, FormControl } from "@mui/material";
 import { useRef, useState } from "react";
-import { CloudUploadOutlined } from "@mui/icons-material";
 import { MuiFileInput } from "mui-file-input";
 import { Control, Controller, useForm } from "react-hook-form";
-import { ActionData } from "./Types";
-// import visual
+import { ActionData } from "./useActionsDB";
 
 type Props = {
   control: Control<ActionData, any>;
@@ -50,21 +48,10 @@ export default (props: Props) => {
               {...field}
               helperText={fieldState.invalid ? "File is invalid" : ""}
               error={fieldState.invalid}
-            />            
+            />
           </FormControl>
         )}
       />
-
-      {/* {!source && <Button>動画を選択</Button>}
-      {source && (
-        <video
-          className="VideoInput_video"
-          width="100%"
-          height="400px"
-          controls
-          src={source}
-        />
-      )} */}
     </Box>
   );
 };

@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { ActionsDBContent } from "../Actions/Types";
 
 export type EventsDBContent = {
   trigger: string;

@@ -1,5 +1,16 @@
 import { useEffect, useState } from "react";
-import { ActionsDBContent } from "./Types";
+
+export type ActionsDBContent = {
+  name: string;
+  action: string;
+  path: string;
+};
+
+export type ActionData = {
+  name: string;
+  action: string;
+  file: File;
+};
 
 export type DBProps = ReturnType<typeof useActionDB>;
 

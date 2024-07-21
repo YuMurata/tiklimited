@@ -1,5 +1,4 @@
 import {
-  Box,
   Button,
   FormControl,
   FormHelperText,
@@ -11,7 +10,7 @@ import {
 } from "@mui/material";
 import { Controller } from "react-hook-form";
 import Upload from "./Upload";
-import { ModalProps } from "./Types";
+import { ModalProps } from "./useAddModal";
 
 const Actions = ["video"];
 

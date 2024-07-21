@@ -1,7 +1,8 @@
 import { useState } from "react";
-import { ActionData, ActionsDBContent } from "./Types";
-import { useActionDB } from "./useActionsDB";
 import { useForm } from "react-hook-form";
+import { ActionData, ActionsDBContent } from "./useActionsDB";
+
+export type ModalProps = ReturnType<typeof useAddModal>;
 
 export const useAddModal = (
   setDBContents: React.Dispatch<React.SetStateAction<ActionsDBContent[]>>

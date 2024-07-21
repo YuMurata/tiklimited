@@ -1,16 +1,6 @@
-import React, { useState } from "react";
-import {
-  Box,
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  Grid,
-  Stack,
-} from "@mui/material";
-import { GridRowId } from "@mui/x-data-grid";
+import { Button, Grid } from "@mui/material";
+import { useExport } from "./useExport";
+import { MuiFileInput } from "mui-file-input";
 
 const customStyles = {
   content: {
@@ -25,14 +15,32 @@ const customStyles = {
 };
 
 export default () => {
-  const handleOpen = () => {};
+  const { exportDatas, uploadFile, file, setFile } = useExport();
+
   return (
     <Grid container direction={"column"}>
       <Grid item>
-        <Button variant="contained" color="primary" onClick={handleOpen}>Import</Button>
+        <Grid container direction={"row"}>
+          <MuiFileInput value={file} onChange={setFile} variant="outlined" />
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={uploadFile}
+            disabled={!file}
+          >
+            Import
+          </Button>
+        </Grid>
       </Grid>
       <Grid item>
-        <Button variant="outlined" color="primary" onClick={handleOpen}>Export</Button>
+        <Button
+          variant="outlined"
+          color="primary"
+          href="http://localhost:8000/eximport/export"
+          download
+        >
+          Export
+        </Button>
       </Grid>
     </Grid>
   );

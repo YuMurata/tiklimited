@@ -1,6 +1,5 @@
 import { useState } from "react";
-import { DBProps } from "./useActionsDB";
-import { ActionsDBContent } from "./Types";
+import { ActionsDBContent, DBProps } from "./useActionsDB";
 
 export type EventsDBContent = {
   trigger: string;
