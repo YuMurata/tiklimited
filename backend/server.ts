@@ -6,6 +6,7 @@ import bodyParser from "body-parser";
 import { getActionDB } from "./src/db/actions";
 import { getUpload } from "./src/upload/upload";
 import { getEximport } from "./src/db/eximport";
+import { getGroupDB } from "./src/db/groups";
 
 const app: express.Express = express();
 const port = 8000;
@@ -13,6 +14,7 @@ const port = 8000;
 app.use(express.static("public"));
 app.use("/db/events", getEventDB());
 app.use("/db/actions", getActionDB());
+app.use("/db/groups", getGroupDB());
 app.use("/sse", getSSE());
 app.use("/tiktok", getTiktok());
 app.use("/upload", getUpload());

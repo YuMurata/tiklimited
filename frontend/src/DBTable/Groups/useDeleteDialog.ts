@@ -1,11 +1,13 @@
 import { GridRowId } from "@mui/x-data-grid";
 import { useState } from "react";
-import { DBProps, EventsDBContent } from "./useEventsDB";
+import { DBProps, GroupsDBContent } from "./useGroupsDB";
+import { useSharedGroupsDB } from "./sharedContext";
 
 export type DeleteDialogProps = ReturnType<typeof useDeleteDialog>;
 
-export const useDeleteDialog = (dbProps: DBProps) => {
+export const useDeleteDialog = () => {
   const [open, setOpen] = useState(false);
+  const { wrappedSetDBContents, dbContents } = useSharedGroupsDB()
 
   const handleOpen = () => {
     setOpen(true);
@@ -16,11 +18,9 @@ export const useDeleteDialog = (dbProps: DBProps) => {
   };
 
   const deleteRow = (
-    row: EventsDBContent,
+    row: GroupsDBContent,
     e: React.MouseEvent<HTMLButtonElement>
   ) => {
-    const { setDBContents } = dbProps;
-
     const post = async () => {
       try {
         const url = "/db/events/delete";
@@ -33,14 +33,14 @@ export const useDeleteDialog = (dbProps: DBProps) => {
           body: JSON.stringify(row),
         });
 
-        const json: React.SetStateAction<EventsDBContent[]> = await res.json();
+        const json: GroupsDBContent[] = await res.json();
 
         console.log(json);
         if (!json) {
           throw new Error(`${url} failed`);
         }
 
-        setDBContents(json);
+        wrappedSetDBContents(json);
         handleClose();
       } catch (e: unknown) {
         if (e instanceof Error) {
@@ -49,6 +49,10 @@ export const useDeleteDialog = (dbProps: DBProps) => {
       }
     };
 
+    if(row.name == dbContents[0].name)
+    {
+      return `${row.name} can't be erased`
+    }
     post()
   };
 

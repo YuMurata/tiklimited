@@ -5,11 +5,12 @@ import {
   Grid,
   InputLabel,
   MenuItem,
-  Select,  
+  Select,
 } from "@mui/material";
 import { Controller } from "react-hook-form";
 import { AddModalProps } from "./useAddModal";
 import { useSharedActionsDB } from "../Actions/sharedContext";
+import { useSharedGroupsDB } from "../Groups/sharedContext";
 
 type Triggers = {
   gift: string;
@@ -29,13 +30,14 @@ const gifts = [
   "Money Gun",
   "Gem Gun",
   "Team Bracelet",
-  "Cheer You Up"
+  "Cheer You Up",
 ];
 
 export default (props: AddModalProps) => {
   const { control, handleClose, addEvent } = props;
 
-  const { dbContents } = useSharedActionsDB();
+  const actionDB = useSharedActionsDB().dbContents;
+  const groupDB = useSharedGroupsDB().dbContents;
 
   return (
     <Grid container direction={"column"}>
@@ -85,7 +87,35 @@ export default (props: AddModalProps) => {
                 >
                   <InputLabel id="area-label">action</InputLabel>
                   <Select {...field} label="action">
-                    {dbContents?.map((value) => (
+                    {actionDB?.map((value) => (
+                      <MenuItem key={value.name} value={value.name}>
+                        {value.name}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                  <FormHelperText>{fieldState.error?.message}</FormHelperText>
+                </FormControl>
+              )}
+            />
+          </Grid>
+
+          <Grid item>
+            <Controller
+              name="group_name"
+              control={control}
+              defaultValue={groupDB[0].name}
+              rules={{
+                required: { value: true, message: "必須入力" },
+              }}
+              render={({ field, fieldState }) => (
+                <FormControl
+                  fullWidth
+                  error={fieldState.invalid}
+                  sx={{ minWidth: 120 }}
+                >
+                  <InputLabel id="area-label">group_name</InputLabel>
+                  <Select {...field} label="group_name">
+                    {groupDB?.map((value) => (
                       <MenuItem key={value.name} value={value.name}>
                         {value.name}
                       </MenuItem>

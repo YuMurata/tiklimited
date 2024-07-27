@@ -3,7 +3,7 @@ import { initDB } from "./init";
 import { Database } from "sqlite3";
 import bodyParser from "body-parser";
 
-export const getEventDB = () => {
+export const getGroupDB = () => {
   const router = Router();
   router.use(bodyParser.urlencoded({ extended: true }));
   router.use(bodyParser.json());
@@ -16,8 +16,8 @@ export const getEventDB = () => {
     var status = 200;
     db.serialize(() => {
       db.run(
-        "insert into events(trigger, action, group_name) values(?,?,?)",
-        [req.body.trigger, req.body.action, req.body.group_name],
+        "insert into groups(name, is_random) values(?,?)",
+        [req.body.name, req.body.is_random],
         (error) => {
           if (error) {
             console.log(`error:${error}`);
@@ -26,7 +26,7 @@ export const getEventDB = () => {
         }
       );
 
-      db.all("select * from events", (err1, rows) => {
+      db.all("select * from groups", (err1, rows) => {
         return res.status(status).send(rows);
       });
     });
@@ -36,8 +36,7 @@ export const getEventDB = () => {
 
   router.get("/read", (req: Request, res: Response) => {
     const db = new Database(`${process.cwd()}/db/test.db`);
-    db.all("select * from events", (err, rows) => {
-      console.log(rows)
+    db.all("select * from groups", (err, rows) => {
       res.send(rows);
     });
     db.close();
@@ -45,7 +44,7 @@ export const getEventDB = () => {
 
   router.get("/update", (req: Request, res: Response) => {
     const db = new Database(`${process.cwd()}/db/test.db`);
-    db.all("select * from events", (err, rows) => {
+    db.all("select * from groups", (err, rows) => {
       res.send(rows);
     });
   });
@@ -55,13 +54,11 @@ export const getEventDB = () => {
 
     console.log(`delete ${req.body}`);
     db.serialize(() => {
-      db.run(
-        "delete from events where trigger = ? and action = ?",
-        req.body.trigger,
-        req.body.action
-      );
+      if (req.body.name != "default") {
+        db.run("delete from groups where name = ?", [req.body.name]);
+      }
 
-      db.all("select * from events", (err, rows) => {
+      db.all("select * from groups", (err, rows) => {
         res.send(rows);
       });
     });

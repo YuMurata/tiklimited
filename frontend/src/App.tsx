@@ -7,6 +7,8 @@ import { Tiktok } from "./Tiktok/Tiktok";
 import { Grid, Typography } from "@mui/material";
 import Modal from "react-modal";
 import { SharedActionsDBProvider } from "./DBTable/Actions/sharedContext";
+import GroupDBTable from "./DBTable/Groups/GroupDBTable";
+import { SharedGroupsDBProvider } from "./DBTable/Groups/sharedContext";
 
 const App: React.FC = () => {
   Modal.setAppElement("#root");
@@ -33,41 +35,47 @@ const App: React.FC = () => {
         >
           <SharedActionsDBProvider>
             <SharedEventsDBProvider>
-              <Grid item>
-                <Grid
-                  container
-                  alignItems={"center"}
-                  justifyContent={"center"}
-                  direction={"column"}
-                  spacing={2}
-                >
-                  <Grid item>
-                    <ActionDBTable />
-                  </Grid>
+              <SharedGroupsDBProvider>
+                <Grid item>
+                  <Grid
+                    container
+                    alignItems={"center"}
+                    justifyContent={"center"}
+                    direction={"column"}
+                    spacing={2}
+                  >
+                    <Grid item>
+                      <ActionDBTable />
+                    </Grid>
 
-                  <Grid item>
-                    <EventDBTable />
+                    <Grid item>
+                      <EventDBTable />
+                    </Grid>
+
+                    <Grid item>
+                      <GroupDBTable />
+                    </Grid>
                   </Grid>
                 </Grid>
-              </Grid>
 
-              <Grid item>
-                <Grid
-                  container
-                  alignItems={"center"}
-                  justifyContent={"center"}
-                  direction={"column"}
-                  spacing={2}
-                >
-                  <Grid item>
-                    <Tiktok />
-                  </Grid>
+                <Grid item>
+                  <Grid
+                    container
+                    alignItems={"center"}
+                    justifyContent={"center"}
+                    direction={"column"}
+                    spacing={2}
+                  >
+                    <Grid item>
+                      <Tiktok />
+                    </Grid>
 
-                  <Grid item>
-                    <Export />
+                    <Grid item>
+                      <Export />
+                    </Grid>
                   </Grid>
                 </Grid>
-              </Grid>
+              </SharedGroupsDBProvider>
             </SharedEventsDBProvider>
           </SharedActionsDBProvider>
         </Grid>

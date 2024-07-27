@@ -1,14 +1,14 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { useSharedEventsDB } from "./sharedContext";
-import { EventsDBContent } from "./useEventsDB";
+import { GroupsDBContent } from "./useGroupsDB";
+import { useSharedGroupsDB } from "./sharedContext";
 
 export type AddModalProps = ReturnType<typeof useAddModal>;
 
 export const useAddModal = () => {
-  const { setDBContents } = useSharedEventsDB();
   const [open, setOpen] = useState(false);
-  const { control, handleSubmit } = useForm<EventsDBContent>({});
+  const { control, handleSubmit } = useForm<GroupsDBContent>({});
+  const { wrappedSetDBContents } = useSharedGroupsDB();
 
   const handleOpen = () => {
     setOpen(true);
@@ -19,9 +19,9 @@ export const useAddModal = () => {
     setOpen(false);
   };
 
-  const postCreate = async (dbContent: EventsDBContent) => {
+  const postCreate = async (dbContent: GroupsDBContent) => {
     try {
-      const url = "/db/events/create";
+      const url = "/db/groups/create";
 
       const res = await fetch(url, {
         method: "POST",
@@ -31,14 +31,14 @@ export const useAddModal = () => {
         body: JSON.stringify(dbContent),
       });
 
-      const json: React.SetStateAction<EventsDBContent[]> = await res.json();
+      const json: GroupsDBContent[] = await res.json();
 
       console.log(res.status);
       if (!json) {
         throw new Error(`${url} failed`);
       }
 
-      setDBContents(json);
+      wrappedSetDBContents(json);
       handleClose();
     } catch (e: unknown) {
       if (e instanceof Error) {

@@ -11,20 +11,19 @@ import {
 import Button from "@mui/material/Button";
 import DeleteButton from "./DeleteButton";
 import AddButton from "./AddButton";
-import { EventsDBContent, useDB } from "./useEventsDB";
+
 import { Box, Container, Grid, Stack, Typography } from "@mui/material";
 import { FolderOffTwoTone, Info } from "@mui/icons-material";
-import { useSharedEventsDB } from "./sharedContext";
+import { GroupField, GroupsDBContent } from "./useGroupsDB";
+import { useSharedGroupsDB } from "./sharedContext";
 
 // カラム
 
 // データ
-export default function EventDBTable() {
-  const props = useSharedEventsDB();
-  console.log(typeof props);
-  const { dbContents } = props;
+export default function GroupDBTable() {
+  const { dbContents } = useSharedGroupsDB();
 
-  const columns: GridColDef<EventsDBContent>[] = [
+  const columns: GridColDef<GroupField>[] = [
     // 削除ボタン
     {
       field: "deleteBtn",
@@ -32,7 +31,7 @@ export default function EventDBTable() {
       sortable: false,
       width: 90,
       renderCell: (params: GridRenderCellParams<any, string>) => (
-        <DeleteButton params={params} dbProps={props} />
+        <DeleteButton {...params} />
       ),
     },
     // 詳細ボタン
@@ -47,9 +46,8 @@ export default function EventDBTable() {
         </Button>
       ),
     },
-    { field: "trigger", headerName: "Trigger", width: 100 },
-    { field: "action", headerName: "Action", width: 250 },
-    { field: "group_name", headerName: "Group", width: 250 },
+    { field: "name", headerName: "Name", width: 100 },
+    { field: "isRandom", headerName: "Random", width: 250 },
   ];
 
   const CustomNoRowsOverlay = () => {
@@ -67,7 +65,7 @@ export default function EventDBTable() {
     return (
       <Stack direction={"column"}>
         <Box display={"flex"} justifyContent={"center"}>
-          <Typography variant="h5">Events</Typography>
+          <Typography variant="h5">Groups</Typography>
         </Box>
 
         <GridToolbarContainer>
@@ -106,7 +104,7 @@ export default function EventDBTable() {
           autoHeight
           sx={{ "--DataGrid-overlayHeight": "300px" }}
           slots={{ noRowsOverlay: CustomNoRowsOverlay, toolbar: CustomToolbar }}
-          getRowId={(row) => `${row.trigger}/${row.action}`}
+          getRowId={(row) => `${row.name}`}
         />
       </Grid>
     </Grid>

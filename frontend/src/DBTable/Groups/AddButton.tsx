@@ -10,8 +10,8 @@ import {
 } from "@mui/material";
 import { GridRowId } from "@mui/x-data-grid";
 import Modal from "react-modal";
-import AddEvent from "./AddEvent";
-import { DBProps } from "./useEventsDB";
+import { DBProps } from "./useGroupsDB";
+import AddGroup from "./AddGroup";
 import { useAddModal } from "./useAddModal";
 
 const customStyles = {
@@ -33,10 +33,10 @@ export default () => {
   return (
     <Box>
       <Button variant="contained" color="info" onClick={handleOpen}>
-        add event
+        add group
       </Button>
       <Modal isOpen={open} style={customStyles}>
-        <AddEvent {...props} />
+        <AddGroup {...props} />
       </Modal>
     </Box>
   );
