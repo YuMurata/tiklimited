@@ -23,7 +23,7 @@ export const useDeleteDialog = () => {
   ) => {
     const post = async () => {
       try {
-        const url = "/db/events/delete";
+        const url = "/db/groups/delete";
 
         const res = await fetch(url, {
           method: "POST",

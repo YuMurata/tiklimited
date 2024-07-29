@@ -16,27 +16,6 @@ import { Controller } from "react-hook-form";
 import { useSharedActionsDB } from "../Actions/sharedContext";
 import { AddModalProps } from "./useAddModal";
 
-type Triggers = {
-  gift: string;
-};
-
-const gifts = [
-  "Rose",
-  "Heart",
-  "Coffe",
-  "Heart Me",
-  "Perfume",
-  "Doughnut",
-  "Paper Crane",
-  "Marvelous Confetti",
-  "Confetti",
-  "Corgi",
-  "Money Gun",
-  "Gem Gun",
-  "Team Bracelet",
-  "Cheer You Up",
-];
-
 export default (props: AddModalProps) => {
   const { control, handleClose, addEvent } = props;
 
@@ -69,7 +48,7 @@ export default (props: AddModalProps) => {
 
           <Grid item>
             <Controller
-              name="isRandom"
+              name="is_random"
               control={control}
               defaultValue={true}
               render={({ field, formState: { errors } }) => (

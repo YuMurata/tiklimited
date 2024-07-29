@@ -68,17 +68,41 @@ export const getEximport = () => {
     );
     fs.mkdirSync(targetDir, { recursive: true });
 
+    const db = new Database(`${process.cwd()}/db/test.db`);
+
+    const getDBNames = async () => {
+      return new Promise<string[]>((resolve) => {
+        db.all(
+          "select name from sqlite_master where type='table'",
+          (err, tables: { name: string }[]) => {
+            resolve(
+              tables.map((table) => {
+                return table.name;
+              })
+            );
+          }
+        );
+      });
+    };
+
+    const DBNames = await getDBNames();
+
     const writeDBData = async (DBName: string) => {
-      const db = new Database(`${process.cwd()}/db/test.db`);
       return new Promise<void>((resolve) => {
         db.all(`select * from ${DBName}`, (err, rows) => {
+          console.log(DBName);
           fs.writeFileSync(`${targetDir}/${DBName}.json`, JSON.stringify(rows));
           resolve();
         });
-        db.close();
       });
     };
-    await Promise.all([writeDBData("events"), writeDBData("actions")]);
+
+    await Promise.all(
+      DBNames.map((DBName) => {
+        return writeDBData(DBName);
+      })
+    );
+    db.close();
 
     const fileName = `${moment().format("YYYY-MMDD-HHmm")}-export.zip`;
     // ストリームを生成して、archiverと紐付ける
@@ -182,14 +206,42 @@ export const getEximport = () => {
           });
         };
 
+        type GroupsColumn = {
+          name: string;
+          is_random: boolean;
+        };
+        const updateGroups = async () => {
+          const DBName = "groups";
+          const datas: GroupsColumn[] = JSON.parse(
+            fs.readFileSync(`${extractPath}/DB/${DBName}.json`, "utf8")
+          );
+
+          return new Promise((resolve) => {
+            const db = new Database(`${process.cwd()}/db/test.db`);
+            db.serialize(() => {
+              for (const data of datas) {
+                db.run(`replace into ${DBName}(name, is_random) values(?,?)`, [
+                  data.name,
+                  data.is_random,
+                ]);
+              }
+              db.all("select * from events", (err1, rows) => {
+                return resolve(rows);
+              });
+            });
+            db.close();
+          });
+        };
+
         unarchiveFiles(req.file);
         copyUploads();
         const actions = await updateActions();
         const events = await updateEvents();
+        const groups = await updateGroups();
 
         console.log("req.file", req.file);
         console.log("req.body", req.body);
-        res.send({ actions: actions, events: events });
+        res.send({ actions: actions, events: events, groups: groups });
       } else {
         res.status(500).send("import failed");
       }

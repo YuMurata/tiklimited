@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 
 export type GroupsDBContent = {
   name: string;
-  isRandom: boolean;
+  is_random: boolean;
 };
 
 export type GroupField = {
@@ -18,7 +18,9 @@ export const useDB = () => {
 
   const wrappedSetDBContents = (datas: GroupsDBContent[]) => {
     const mapped_json = datas.map((data) => {
-      return { name: data.name, isRandom: data.isRandom ? "True" : "False" };
+      console.log("group v")
+      console.log(data)
+      return { name: data.name, isRandom: data.is_random ? "True" : "False" };
     });
     console.log(mapped_json)
     setDBContents(mapped_json);

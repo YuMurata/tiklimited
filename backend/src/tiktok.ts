@@ -91,25 +91,69 @@ export const getTiktok = () => {
 
       const db = new Database(`${process.cwd()}/db/test.db`);
       db.serialize(() => {
-        db.all(
-          "select * from actions where name = (select action from events where trigger = ?)",
-          [giftName],
-          (
-            err: Error,
-            rows: { action: string; path: string; name: string }[]
-          ) => {
-            console.log(rows);
-            rows.forEach((row) => {
+        const sql =
+          "select actions.action,actions.path,events.group_name,groups.is_random from actions inner join events on actions.name = events.action inner join groups on events.group_name = groups.name where trigger = ?";
+        type DBParam = {
+          action: string;
+          path: string;
+          group_name: string;
+          is_random: boolean;
+        };
+
+        type groupedAction = {
+          name: string;
+          actions: DBParam[];
+          isRandom: boolean;
+        };
+
+        db.all(sql, [giftName], (err: Error, rows: DBParam[]) => {
+          console.log(rows);
+
+          const groupNames = [
+            ...new Set(
+              rows.map((x) => {
+                return x.group_name;
+              })
+            ),
+          ];
+
+          const groups: groupedAction[] = groupNames.map((groupName) => {
+            return {
+              name: groupName,
+              actions: rows.filter((data) => {
+                return data.group_name == groupName;
+              }),
+              isRandom: false,
+            };
+          });
+
+          for (const groupedData of groups) {
+            groupedData["isRandom"] = groupedData.actions[0].is_random;
+          }
+
+          groups.forEach((groupedData) => {
+            if (groupedData.isRandom) {
+              const action = groupedData.actions[Math.floor(Math.random()*groupedData.actions.length)]
               notifyEmitter.emit(
                 "chat",
                 JSON.stringify({
                   user: data.uniqueId,
-                  data: [{ action: row.action, path: row.path }],
+                  data: [{ action: action.action, path: action.path }],
                 })
               );
-            });
-          }
-        );
+            } else {
+              groupedData.actions.forEach((action) => {
+                notifyEmitter.emit(
+                  "chat",
+                  JSON.stringify({
+                    user: data.uniqueId,
+                    data: [{ action: action.action, path: action.path }],
+                  })
+                );
+              });
+            }
+          });
+        });
       });
 
       db.close();
