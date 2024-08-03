@@ -31,6 +31,9 @@ const gifts = [
   "Gem Gun",
   "Team Bracelet",
   "Cheer You Up",
+  "GG",
+  "Sports Car",
+  "TikTok Universe",
 ];
 
 export default (props: AddModalProps) => {

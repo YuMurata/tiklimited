@@ -57,11 +57,11 @@ export const getTiktok = () => {
           };
         });
         console.log(giftURLs);
-        // giftList.forEach((gift:any) => {
-        //   console.log(
-        //     `id: ${gift.id}, name: ${gift.name}, cost: ${gift.diamond_count}`
-        //   );
-        // });
+        giftList.forEach((gift:any) => {
+          console.log(
+            `id: ${gift.id}, name: ${gift.name}, cost: ${gift.diamond_count}`
+          );
+        });
       })
       .catch((err) => {
         console.error(err);
