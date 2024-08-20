@@ -31,6 +31,12 @@ tiktokLiveSession
           `id: ${gift.id}, name: ${gift.name}, cost: ${gift.diamond_count}`
         );
       });
+    console.log("--- list ---");
+    giftList.forEach((gift) => {
+      console.log(
+        `"${gift.name}",`
+      );
+    });
   })
   .catch((err) => {
     console.error(err);
