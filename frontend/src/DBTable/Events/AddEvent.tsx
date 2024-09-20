@@ -32,7 +32,6 @@ const gifts = [
   "Community Celebration",
   "TikTok Universe",
   "Community Crown",
-  "TikTok Universe",
   "TikTok Stars",
   "King Leonardo",
   "Leon and Lion",
@@ -220,6 +219,9 @@ const gifts = [
   "Cheer You Up",
   "Team Bracelet",
   "Heart Me",
+  "Gamepad",
+  "Gaming Keyboard",
+  "Arcade Game"
 ];
 
 export default (props: AddModalProps) => {

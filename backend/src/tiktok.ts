@@ -84,9 +84,9 @@ export const getTiktok = () => {
 
     // And here we receive gifts sent to the streamer
     tiktokLiveSession.on("gift", (data) => {
-      const giftName = data.extendedGiftInfo.name;
+      const giftName = data.giftName;
       console.log(
-        `gift: ${data.uniqueId} (userId:${data.userId}) sends ${giftName}`
+        `gift: ${data.uniqueId} (userId:${data.userId}) sends ${giftName}(${data.giftName})`
       );
 
       const db = new Database(`${process.cwd()}/db/test.db`);
