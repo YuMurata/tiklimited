@@ -4,6 +4,8 @@ import bodyParser from "body-parser";
 import { notifyEmitter } from "./sse";
 import { InvalidatedProjectKind } from "typescript";
 import { Database } from "sqlite3";
+import fsp from "fs/promises";
+import fs from "fs";
 
 type GiftURL = {
   name: string;
@@ -57,7 +59,7 @@ export const getTiktok = () => {
           };
         });
         console.log(giftURLs);
-        giftList.forEach((gift:any) => {
+        giftList.forEach((gift: any) => {
           console.log(
             `id: ${gift.id}, name: ${gift.name}, cost: ${gift.diamond_count}`
           );
@@ -133,7 +135,7 @@ export const getTiktok = () => {
 
           groups.forEach((groupedData) => {
             if (groupedData.isRandom) {
-              const action = groupedData.actions[Math.floor(Math.random()*groupedData.actions.length)]
+              const action = groupedData.actions[Math.floor(Math.random() * groupedData.actions.length)]
               notifyEmitter.emit(
                 "chat",
                 JSON.stringify({
@@ -166,6 +168,25 @@ export const getTiktok = () => {
     tiktokLiveSession?.disconnect();
     tiktokLiveSession = null;
     return res.status(200).send("ok");
+  });
+
+  router.get("/available-gifts", async (req: Request, res: Response) => {
+    console.log("disconnect");
+
+    const username = 'majecraft'
+    const tmpSession = tiktokLiveSession ?? new WebcastPushConnection(username, { enableExtendedGiftInfo: true, });
+
+    const fetchGiftNames = async () => {
+      return (await tmpSession?.getAvailableGifts() ?? []).map((x: any) => x.name)
+    }
+
+    const readExtraGiftNames = async () => {
+      return fs.existsSync(extraGiftsPath) ? (await fsp.readFile(extraGiftsPath)).toString().split('\n') : []
+    }
+    const extraGiftsPath = `${process.cwd()}/extra_gifts.txt`
+    const [giftNames, extraGiftNames] = await Promise.all([fetchGiftNames(), readExtraGiftNames()])
+
+    return res.status(200).send({ giftNames: [...giftNames, ...extraGiftNames] });
   });
 
   return router;
