@@ -11,14 +11,111 @@ import { Controller } from "react-hook-form";
 import { AddModalProps } from "./useAddModal";
 import { useSharedActionsDB } from "../Actions/sharedContext";
 import { useSharedGroupsDB } from "../Groups/sharedContext";
+import { memo, useEffect, useMemo, useState } from "react";
+// import Select from "react-select/dist/declarations/src/Select";
 
 type Triggers = {
   gift: string;
 };
 
-const gifts = [
-  
-];
+// type Gift = {
+//   id: number;
+//   name: string;
+//   diamond: number;
+//   iconUrl: string;
+// };
+
+// const GiftIcon = memo(({ gift }: { gift: Gift }) => (
+//   <div>
+//     <img
+//       src={gift.iconUrl}
+//       alt={gift.name}
+//       width={40}
+//       height={40}
+//       referrerPolicy="no-referrer"
+//     />
+
+//     <div>{gift.name}</div>
+//   </div>
+// ));
+
+// type SelectTriggerProps = {
+//   gift: Gift | null;
+//   setGift: (gift: Gift | null) => void;
+// };
+
+// type SelectTriggerOption = {
+//   label: string;
+//   value: number;
+//   name: string;
+//   diamond: number;
+//   iconUrl: string;
+// };
+
+// const toOption = (gift: Gift): SelectTriggerOption => {
+//   return {
+//     label: gift.name,
+//     value: gift.id,
+//     name: gift.name,
+//     diamond: gift.diamond,
+//     iconUrl: gift.iconUrl,
+//   };
+// };
+
+// const toGift = (option: SelectTriggerOption | null): Gift | null => {
+//   if (!option) {
+//     return null;
+//   }
+
+//   return {
+//     id: option.value,
+//     name: option.name,
+//     diamond: option.diamond,
+//     iconUrl: option.iconUrl,
+//   };
+// };
+
+// const SelectTrigger: React.FC<SelectTriggerProps> = ({ gift, setGift }) => {
+//   const [gifts, setGifts] = useState<Gift[]>([]);
+
+//   useEffect(() => {
+//     (async () => {
+//       const url = "/tiktok/available-gifts";
+//       const response = await fetch(url, {
+//         method: "GET",
+//         headers: {
+//           "Content-Type": "application/json",
+//         },
+//       });
+
+//       const json = await response.json();
+//       console.log(json);
+//       setGiftNames(json.giftNames.slice(0, 5));
+//     })();
+//   }, []);
+
+//   const onChange = (newGiftOption: SelectTriggerOption | null) => {
+//     const newGift = toGift(newGiftOption);
+//     setGift(newGift);
+//   };
+
+//   const value = useMemo(() => {
+//     return gift ? toOption(gift) : null;
+//   }, [gift]);
+
+//   return (
+//     <Select
+//       instanceId="SelectTrigger"
+//       value={value}
+//       onChange={onChange}
+//       options={gifts.map(toOption)}
+//       inputValue=""
+//       onInputChange={() => {}}
+//       onMenuOpen={() => {}}
+//       onMenuClose={() => {}}
+//     />
+//   );
+// };
 
 export default (props: AddModalProps) => {
   const { control, handleClose, addEvent } = props;
