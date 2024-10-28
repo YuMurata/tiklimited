@@ -186,7 +186,7 @@ export const getTiktok = () => {
     const extraGiftsPath = `${process.cwd()}/extra_gifts.txt`
     const [giftNames, extraGiftNames] = await Promise.all([fetchGiftNames(), readExtraGiftNames()])
 
-    return res.status(200).send({ giftNames: [...new Set([...giftNames, ...extraGiftNames])] });
+    return res.status(200).send({ giftNames: [...new Set([...giftNames, ...extraGiftNames])].sort() });
   });
 
   return router;
