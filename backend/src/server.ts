@@ -1,12 +1,12 @@
 import express from "express";
-import { getEventDB } from "./src/db/events";
-import { getSSE } from "./src/sse";
-import { getTiktok } from "./src/tiktok";
+import { getEventDB } from "./db/events";
+import { getSSE } from "./sse";
+import { getTiktok } from "./tiktok";
 import bodyParser from "body-parser";
-import { getActionDB } from "./src/db/actions";
-import { getUpload } from "./src/upload/upload";
-import { getEximport } from "./src/db/eximport";
-import { getGroupDB } from "./src/db/groups";
+import { getActionDB } from "./db/actions";
+import { getUpload } from "./upload/upload";
+import { getEximport } from "./db/eximport";
+import { getGroupDB } from "./db/groups";
 
 const app: express.Express = express();
 const port = 8000;
