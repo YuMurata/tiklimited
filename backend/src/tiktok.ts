@@ -6,6 +6,7 @@ import { InvalidatedProjectKind } from "typescript";
 import { Database } from "sqlite3";
 import fsp from "fs/promises";
 import fs from "fs";
+import { logger } from "./logs";
 
 type GiftURL = {
   name: string;
@@ -23,10 +24,12 @@ export const getTiktok = () => {
   var giftURLs: GiftURL[] = [];
 
   router.get("/status", (req: Request, res: Response) => {
+    logger.tiktok.info('request to /tiktok/status')
     res.send(tiktokLiveSession?.getState());
   });
 
   router.post("/connect", (req: Request, res: Response) => {
+    logger.tiktok.info('request to /tiktok/connect')
     console.log(req.body);
     const tiktokID = req.body.tiktokID;
 
@@ -163,6 +166,7 @@ export const getTiktok = () => {
   });
 
   router.post("/disconnect", (req: Request, res: Response) => {
+    logger.tiktok.info('request to /tiktok/disconnect')
     console.log("disconnect");
 
     tiktokLiveSession?.disconnect();
@@ -171,6 +175,7 @@ export const getTiktok = () => {
   });
 
   router.get("/available-gifts", async (req: Request, res: Response) => {
+    logger.tiktok.info('request to /tiktok/available-gifts')
     console.log("disconnect");
 
     const username = 'majecraft'

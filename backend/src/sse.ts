@@ -1,14 +1,14 @@
 import { Router, Request, Response } from "express";
 import EventEmitter from "events";
+import { logger } from "./logs";
 
 export const notifyEmitter = new EventEmitter();
 
 export const getSSE = () => {
   const router = Router();
 
-  console.log("export sse")
-
   router.get("/", (req: Request, res: Response) => {
+    logger.sse.info('request to /sse')
     res.writeHead(200, {
       "Content-Type": "text/event-stream",
       "Cache-Control": "no-cache",

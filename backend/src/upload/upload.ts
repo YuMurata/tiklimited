@@ -5,8 +5,6 @@ import upload from "./multerHandler";
 export const getUpload = () => {
   const router = express.Router();
 
-  console.log("export upload");
-
   // ユーザー更新APIの呼出
   router.post(
     "/update",
