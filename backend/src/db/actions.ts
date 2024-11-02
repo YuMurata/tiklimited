@@ -2,8 +2,10 @@ import { Router, Request, Response } from "express";
 import { initDB } from "./init";
 import { Database } from "sqlite3";
 import bodyParser from "body-parser";
+import { logger } from "../logs";
 
 export const getActionDB = () => {
+
   const router = Router();
   router.use(bodyParser.urlencoded({ extended: true }));
   router.use(bodyParser.json());
@@ -13,6 +15,7 @@ export const getActionDB = () => {
   initDB();
 
   router.post("/create", (req: Request, res: Response) => {
+    logger.actions.info('request to /actions/create')
     console.log(req.body);
     const db = new Database(`${process.cwd()}/db/test.db`);
     db.serialize(() => {
@@ -33,6 +36,7 @@ export const getActionDB = () => {
   });
 
   router.get("/read", (req: Request, res: Response) => {
+    logger.actions.info('request to /actions/read')
     const db = new Database(`${process.cwd()}/db/test.db`);
     db.all("select * from actions", (err, rows) => {
       res.send(rows);
@@ -40,6 +44,7 @@ export const getActionDB = () => {
   });
 
   router.get("/update", (req: Request, res: Response) => {
+    logger.actions.info('request to /actions/update')
     const db = new Database(`${process.cwd()}/db/test.db`);
     db.all("select * from actions", (err, rows) => {
       res.send(rows);
@@ -47,6 +52,7 @@ export const getActionDB = () => {
   });
 
   router.post("/delete", (req: Request, res: Response) => {
+    logger.actions.info('request to /actions/delete')
     const db = new Database(`${process.cwd()}/db/test.db`);
 
     console.log(`delete ${req.body}`);

@@ -2,6 +2,7 @@ import { Router, Request, Response, NextFunction } from "express";
 import { initDB } from "./init";
 import { Database } from "sqlite3";
 import bodyParser from "body-parser";
+import { logger } from "../logs";
 
 export const getEventDB = () => {
   const router = Router();
@@ -10,6 +11,7 @@ export const getEventDB = () => {
   initDB();
 
   router.post("/create", (req: Request, res: Response) => {
+    logger.events.info('request to /events/create')
     const db = new Database(`${process.cwd()}/db/test.db`);
 
     console.log(req.body);
@@ -35,6 +37,7 @@ export const getEventDB = () => {
   });
 
   router.get("/read", (req: Request, res: Response) => {
+    logger.events.info('request to /events/read')
     const db = new Database(`${process.cwd()}/db/test.db`);
     db.all("select * from events", (err, rows) => {
       console.log(rows)
@@ -44,6 +47,7 @@ export const getEventDB = () => {
   });
 
   router.get("/update", (req: Request, res: Response) => {
+    logger.events.info('request to /events/update')
     const db = new Database(`${process.cwd()}/db/test.db`);
     db.all("select * from events", (err, rows) => {
       res.send(rows);
@@ -51,6 +55,7 @@ export const getEventDB = () => {
   });
 
   router.post("/delete", (req: Request, res: Response) => {
+    logger.events.info('request to /events/delete')
     const db = new Database(`${process.cwd()}/db/test.db`);
 
     console.log(`delete ${req.body}`);

@@ -7,11 +7,13 @@ import { getActionDB } from "./db/actions";
 import { getUpload } from "./upload/upload";
 import { getEximport } from "./db/eximport";
 import { getGroupDB } from "./db/groups";
+import { logger } from "./logs";
 
 const app: express.Express = express();
 const port = 8000;
 
 app.use(express.static("public"));
+
 app.use("/db/events", getEventDB());
 app.use("/db/actions", getActionDB());
 app.use("/db/groups", getGroupDB());
@@ -46,5 +48,5 @@ app.get("/db/read", (req: express.Request, res: express.Response) => {
 });
 
 app.listen(port, () => {
-  console.log(`port ${port} でサーバー起動中`);
+  logger.default.info(`port ${port} でサーバー起動中`);
 });

@@ -7,6 +7,7 @@ import archiver from "archiver";
 import moment from "moment";
 import upload from "./multerHandler";
 import AdmZip from "adm-zip";
+import { logger } from "../logs";
 
 const rmDir = (dirPath: string) => {
   if (!fs.existsSync(dirPath)) {
@@ -56,10 +57,8 @@ export const getEximport = () => {
   const exportDir = makeExportDir();
   const importDir = makeImportDir();
 
-  console.log("export eximport");
-
   router.get("/export", async (req: Request, res: Response) => {
-    console.log("exec export");
+    logger.eximport.info('request to /eximport/export')
 
     const uniqueSuffix = Math.random().toString(26).substring(4, 10);
 
@@ -132,6 +131,7 @@ export const getEximport = () => {
     "/import",
     upload.single("file"),
     async (req: express.Request, res: express.Response) => {
+      logger.eximport.info('request to /eximport/import')
       if (req.file) {
         console.log("exec import");
 
